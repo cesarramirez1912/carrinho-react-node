@@ -1,0 +1,11 @@
+.App {
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f4f3ef;
+}
+
+.cor-col-vh {
+  background-color: rgb(68, 20, 94);
+}

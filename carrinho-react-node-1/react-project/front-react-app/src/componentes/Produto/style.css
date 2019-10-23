@@ -1,0 +1,16 @@
+.teste{
+    border-radius: 10px;
+    text-align: start;
+}
+
+.titulo{
+    border-bottom: 1px solid #fff;
+}
+
+.estilo-tabela{
+    box-shadow: 0px 0px 26px -9px rgba(0,0,0,0.86);
+}
+
+.cor-bg-thead{
+    background-color: #B335F7;
+}
