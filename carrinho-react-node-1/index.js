@@ -48,6 +48,7 @@ app.get("/produtos",(req,res)=>{
     });
 });
 
+//Atualizar produto pelo id
 app.post("/update",(req,res)=>{
     var param = [
         req.body,
