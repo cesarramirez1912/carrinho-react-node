@@ -2,7 +2,8 @@ import React,{Component} from 'react';
 import './App.css';
 import {Header} from './componentes/Header';
 import {MostrarProdutos, FormularioProduto} from './componentes/Produto';
-import { Row,Col } from 'react-bootstrap';
+import {ModalCarrinho} from './componentes/Modal';
+import { Row,Col} from 'react-bootstrap';
 
 
 class App extends Component {
@@ -23,8 +24,14 @@ class App extends Component {
       inputDefaultId:'',
       indexEditado:'',
       booleano:false,
-      itensCarrinho:0,
+      itensCarrinho:[],
+      modal: false
     }
+  }
+
+  
+  mostrarModal = () => {
+    this.setState({modal:!this.state.modal})
   }
 
   componentDidMount(){
@@ -76,10 +83,25 @@ eventoEditarProduto = (dadosEditaveis) => {
   this.eventoBotaoFormularioEdicao()
 }
 
-eventoAddCarrinho = (e) => {
-  this.setState({itensCarrinho:this.state.itensCarrinho+1})
+eventoAddCarrinho = (e,items) => {
+  var arrayTemporario = this.state.itensCarrinho;
+  var valorTemporario = items.quantidade;
+  arrayTemporario.push(items);
+  arrayTemporario.forEach((item,index)=>{
+    if(item.descricao!==items.descricao){
+     
+    }else{
+      valorTemporario = arrayTemporario[index].quantidade;
+      arrayTemporario[index].quantidade=valorTemporario+1;
+      item.precoTotal=item.quantidade*item.preco;
+      item.precoTotal = item.precoTotal.toFixed(2);
+      if(valorTemporario!==0){
+        arrayTemporario.pop();
+      }
+    }
+  })
+  this.setState({itensCarrinho:arrayTemporario})
 }
-
 produtoEditadoPronto = (data) => {
   var arrayTemporario = this.state.produtos;
   arrayTemporario[this.state.indexEditado] = data;
@@ -137,7 +159,7 @@ eventoRemoveProduto = (id,index) => {
 
   eventoBotaoFormularioEdicao = () => {
     this.setState({
-      botaoCadastrar:false,
+      botaoCadastrar:!this.state.botaoCadastrar,
     })
   }
 
@@ -151,13 +173,14 @@ eventoRemoveProduto = (id,index) => {
         <Col md="9">
             <Row>
                <Col className="mb-3 p-0">
-                <Header title="Produtos" itensCarrinho={this.state.itensCarrinho}/>
+                <Header title="Produtos" mostrarModal={this.mostrarModal} itensCarrinho={this.state.itensCarrinho}/>
               </Col>
           </Row>
           <Row>
             <Col>
-            <MostrarProdutos eventoAddCarrinho={this.eventoAddCarrinho} eventoRemoveProduto={this.eventoRemoveProduto} eventoEditarProduto={this.eventoEditarProduto} controls={this.state.novoProduto} controle={this.state} />
+              <MostrarProdutos eventoAddCarrinho={this.eventoAddCarrinho} eventoRemoveProduto={this.eventoRemoveProduto} eventoEditarProduto={this.eventoEditarProduto} controls={this.state.novoProduto} controle={this.state} />
             </Col>
+            <ModalCarrinho controle={this.state}  mostrarModal={this.mostrarModal}/>
           </Row>
         </Col>
       </Row>
