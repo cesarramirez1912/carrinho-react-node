@@ -167,7 +167,7 @@ eventoRemoveProduto = (id,index) => {
     return (
     <div className="App container-fluid">
       <Row>
-         <Col md="3" className="cor-col-vh min-vh-100">
+         <Col md="3" className="cor-col-vh min-vh-100 m-0 p-0">
          <FormularioProduto eventoAddProduto={this.eventoAddProduto} produtoEditadoPronto={this.produtoEditadoPronto} controle={this.state} eventoSetState={this.eventoSetState.bind(this)} eventoBotaoEditar={this.eventoBotaoFormularioEdicao} eventosTrocarDescricao={this.trocarInputDescricao.bind(this)}  eventosTrocarPreco={this.trocarInputPreco.bind(this)}/>
         </Col>
         <Col md="9">

@@ -100,37 +100,53 @@ export class FormularioProduto extends Component{
         document.getElementById("id-form").reset();
       }
     
+      testeBotao = () =>{
+          console.log('teste');
+      }
+
     render(){
         return (
-            <div className="teste p-4">
-                <Row>
-                    <Col>
-                    <div className="titulo mb-3">
-                         <h3 className="text-light">Cadastrar Produto</h3>
-                    </div>
+            <div className="teste">
+           <Row className="p-4">
+                <Col>
+                        <div className="titulo mb-3">
+                            <h3 className="text-light">Cadastrar Produto</h3>
+                         </div>
+                         <h5 className="text-light mb-2">Descricao</h5>
+                             <form id="id-form">
+                                    <InputGroup className="mb-2">
+                                        <Input name="desc"  defaultValue={this.props.controle.inputDefaultDescricao} onChange={(event) =>this.trocarInputDescricao(event)} placeholder="Ex: Leite" />
+                                    </InputGroup>
+                                    <h5 className="text-light mb-2">Preco</h5>
+                                    <InputGroup className="mb-2">
+                                        <Input name="rs" defaultValue={this.props.controle.inputDefaultPreco} onChange={(event) => this.trocarInputPreco(event)} placeholder="R$" />
+                                    </InputGroup>
+                                    <h5 className="text-light">Quantidade</h5>
+                                    <InputGroup className="mb-2">
+                                        <Input name="qntd" defaultValue={this.props.controle.inputDefaultId} onChange={(event)=> this.trocarQuantidade(event)} placeholder="1,2,3.." />
+                                    </InputGroup>
+                                    {this.props.controle.botaoCadastrar ? <Button className="w-100 mt-3 bg-success" onClick={(event)=> this.props.eventoAddProduto(event)}>Cadastrar</Button> : <Button className="w-100 mt-3 bg-info" onClick={this.clickEdit}>Atualizar</Button>}
+                             </form>
                     </Col>
-                </Row>
-              <Row className="mb-2">
-               <Col>
-               <h5 className="text-light mb-2">Descricao</h5>
-                <form id="id-form">
-                   <InputGroup className="mb-2">
-                        <Input name="desc"  defaultValue={this.props.controle.inputDefaultDescricao} onChange={(event) =>this.trocarInputDescricao(event)} placeholder="Ex: Leite" />
-                    </InputGroup>
-                    <h5 className="text-light mb-2">Preco</h5>
-                    <InputGroup className="mb-2">
-                        <Input name="rs" defaultValue={this.props.controle.inputDefaultPreco} onChange={(event) => this.trocarInputPreco(event)} placeholder="R$" />
-                    </InputGroup>
-                    <h5 className="text-light">Quantidade</h5>
-                    <InputGroup className="mb-2">
-                        <Input name="qntd" defaultValue={this.props.controle.inputDefaultId} onChange={(event)=> this.trocarQuantidade(event)} placeholder="1,2,3.." />
-                    </InputGroup>
-                    {this.props.controle.botaoCadastrar ? <Button className="w-100 mt-3 bg-success" onClick={(event)=> this.props.eventoAddProduto(event)}>Cadastrar</Button> : <Button className="w-100 mt-3 bg-info" onClick={this.clickEdit}>Atualizar</Button>}
-                </form>
-               </Col>
-              </Row>
+           </Row>
+                    <Col>
+                    <Row>
+                            <button type='button' className='btn2 w-100' onClick={(event)=> this.testeBotao()}>
+                                <h4>Funcionario</h4>
+                            </button>
+                        </Row>
+                        <Row>
+                            <button type='button' className='btn2 w-100' onClick={(event)=> this.testeBotao()}>
+                                <h4>Estoque</h4>
+                            </button>
+                        </Row>
+                        <Row>
+                            <button type='button' className='btn2 w-100' onClick={(event)=> this.testeBotao()}>
+                                <h4>Vendas</h4>
+                            </button>
+                        </Row>
+                    </Col>
             </div>
           );
         };
-        
     }
