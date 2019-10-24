@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Button,Table,InputGroup,Input,Col,Row} from 'reactstrap';
 import './style.css';
 import { FaCartPlus,FaEdit,FaTrashAlt } from "react-icons/fa";
+import {Link} from 'react-router-dom'
 
 export class MostrarProdutos extends Component {
 
@@ -130,11 +131,13 @@ export class FormularioProduto extends Component{
                     </Col>
            </Row>
                     <Col>
-                    <Row>
-                            <button type='button' className='btn2 w-100' onClick={(event)=> this.testeBotao()}>
-                                <h4>Funcionario</h4>
-                            </button>
-                        </Row>
+                        <Link to="/funcionario">
+                            <Row>
+                                <button type='button' className='btn2 w-100' onClick={(event)=> this.testeBotao()}>
+                                        <h4>Funcionario</h4>
+                                </button>
+                             </Row>
+                        </Link> 
                         <Row>
                             <button type='button' className='btn2 w-100' onClick={(event)=> this.testeBotao()}>
                                 <h4>Estoque</h4>
