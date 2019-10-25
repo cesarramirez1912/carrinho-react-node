@@ -37,6 +37,17 @@ app.post("/novoproduto",(req,res)=>{
     }
 });
 
+//Mostrar todos os funcionarios
+app.get("/funcionarios",(req,res)=>{
+    conexao.query('SELECT * FROM TB_FUNCIONARIO ORDER BY id_vendedor DESC',function(err,rows,fields){
+        if(!err){
+           res.send(rows);
+        }else{
+            console.log(err);
+        }
+    });
+});
+
 //Mostrar todos os produtos
 app.get("/produtos",(req,res)=>{
     conexao.query('SELECT * FROM TB_PRODUTO ORDER BY id_produto DESC',function(err,rows,fields){
