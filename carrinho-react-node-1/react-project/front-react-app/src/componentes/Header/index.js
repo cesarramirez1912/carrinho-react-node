@@ -12,10 +12,18 @@ export class Header extends Component {
 
     render(){
         var itensQuantidade = this.props.itensCarrinho;
+        let botao;
+        
+        if(this.props.title==='Produtos'){
+            botao = <Button onClick={event => this.props.mostrarModal()}><h2 className="text-light m-0 p-0"><FaShoppingCart />{' '}{itensQuantidade.length}</h2></Button>
+        }else{
+            botao=<div></div>
+        }
+
         return (
             <nav className="navbar nav-bar-expand header">
                 <h2 className="text-light">{this.props.title}</h2>
-                <Button onClick={event => this.props.mostrarModal()}><h2 className="text-light m-0 p-0"><FaShoppingCart />{' '}{itensQuantidade.length}</h2></Button>
+                {botao}
              </nav>
           );
     }

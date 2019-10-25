@@ -1,16 +1,14 @@
 import React, {Component} from 'react';
 import{Header} from '../Header'
-import{FormularioProduto} from '../Produto'
+import{BarraEsquerda,MostrarFuncionarios,FormularioFuncionario} from './componentes-funcionario'
 import { Row,Col} from 'react-bootstrap';
-import { Link } from 'react-router-dom'
+
 
 export class PaginaFuncionario extends Component{
 
     constructor(props){
         super(props);
         this.state = {
-            itensCarrinho:[],
-            modal: false
         }
     }
 
@@ -23,41 +21,17 @@ export class PaginaFuncionario extends Component{
             <div className="App container-fluid">
               <Row>
                  <Col md="3" className="cor-col-vh min-vh-100 m-0 p-0">
-                 <Col>
-                 <Link to="/">
-                            <Row>
-                                <button type='button' className='btn2 w-100'>
-                                        <h4>Produtos</h4>
-                                </button>
-                             </Row>
-                        </Link> 
-                        <Link to="/funcionario">
-                            <Row>
-                                <button type='button' className='btn2 w-100'>
-                                        <h4>Funcionario</h4>
-                                </button>
-                             </Row>
-                        </Link> 
-                        <Row>
-                            <button type='button' className='btn2 w-100' onClick={(event)=> this.testeBotao()}>
-                                <h4>Estoque</h4>
-                            </button>
-                        </Row>
-                        <Row>
-                            <button type='button' className='btn2 w-100' onClick={(event)=> this.testeBotao()}>
-                                <h4>Vendas</h4>
-                            </button>
-                        </Row>
-                    </Col>
+                     <FormularioFuncionario/>
+                     <BarraEsquerda/>
                 </Col>
                 <Col md="9">
                     <Row>
                        <Col className="mb-3 p-0">
-                       <Header title="Funcionario" mostrarModal={this.mostrarModal} itensCarrinho={this.state.itensCarrinho}/>
+                            <Header title="Funcionario" mostrarModal={false} itensCarrinho={0}/>
                        </Col>
                   </Row>
                   <Row>
-               
+                      <MostrarFuncionarios/>
                   </Row>
                 </Col>
               </Row>
