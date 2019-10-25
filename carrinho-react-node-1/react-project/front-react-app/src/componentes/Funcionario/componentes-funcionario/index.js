@@ -37,31 +37,9 @@ export class BarraEsquerda extends Component {
 }
 
 export class MostrarFuncionarios extends Component {
+
     render(){
-        let items = [{
-            "id_produto": 59,
-            "descricao": "Pack do Brasil Intensos - 50 Cáps",
-            "preco": 122.2,
-            "salario": 2.200
-        },
-        {
-            "id_produto": 58,
-            "descricao": "Café Pilão Tradicional Vácuo 500 g",
-            "preco": 10.9,
-            "salario": 2.200
-        },
-        {
-            "id_produto": 57,
-            "descricao": "Feijão Preto Tipo 1 Broto Legal 1 Kg",
-            "preco": 6.89,
-            "salario": 2.200
-        },
-        {
-            "id_produto": 56,
-            "descricao": "Sabão Líquido OMO Multiação 1L ",
-            "preco": 11.33,
-            "salario": 2.200
-        }];
+        let items = this.props.todosOsFuncionarios;
         return(
             <Col>
              <Table striped className="estilo-tabela">
@@ -77,22 +55,22 @@ export class MostrarFuncionarios extends Component {
               <tbody>
              {
                      items.map((item,index)=> (
-                        <tr key={item.id_produto}>
+                        <tr key={item.id_vendedor}>
                               <td>
-                               <h6>{item.id_produto}</h6>
+                               <h6>{item.id_vendedor}</h6>
                                    </td>
                                    <td>
-                                       <h6>{item.descricao}</h6>
+                                       <h6>{item.nome}</h6>
                                    </td>
                                    <td>
-                                      <h6>{item.preco}</h6>
+                                      <h6>{item.cargo}</h6>
                                    </td>
                                    <td>
                                    <h6>{item.salario}</h6>
                                    </td>
                                    <td>
-                                        <Button color="info" onClick={event => this.props.eventoEditarProduto({id_produto:item.id_produto,descricao:item.descricao,preco:item.preco,index})} size="sm"><FaEdit/></Button>{' '}
-                                        <Button color="danger" onClick={event => this.props.eventoRemoveProduto(item.id_produto,index)} size="sm"><FaTrashAlt/></Button>
+                                        <Button color="info" onClick={(event) => this.props.eventoEditarProduto({id_produto:item.id_produto,descricao:item.descricao,preco:item.preco,index})} size="sm"><FaEdit/></Button>{' '}
+                                        <Button color="danger" onClick={(event) => this.props.eventoRemoveProduto(item.id_produto,index)} size="sm"><FaTrashAlt/></Button>
                                    </td>
                                 </tr>
                            ))
@@ -110,15 +88,8 @@ export class FormularioFuncionario extends Component {
         super(props)
         this.state = {
             dalorDefault:'',
-            botaoCadastrar:true,
         }
     }
-
-    funcaoTeste = () => {
-        this.setState({
-            botaoCadastrar:!this.state.botaoCadastrar
-        })
-    } 
 
     render(){
         return(
@@ -141,7 +112,7 @@ export class FormularioFuncionario extends Component {
                                      <InputGroup className="mb-2">
                                          <Input name="salario" defaultValue={this.state.valorDefault} onChange={(event)=> this.trocarQuantidade(event)} placeholder="1,2,3.." />
                                      </InputGroup>
-                                     {this.state.botaoCadastrar ? <Button className="w-100 mt-3 bg-success" onClick={(event)=> this.funcaoTeste(event)}>Cadastrar</Button> : <Button className="w-100 mt-3 bg-info" onClick={(event)=> this.funcaoTeste(event)}>Atualizar</Button>}
+                                     {this.props.estadoBotao ? <Button className="w-100 mt-3 bg-success" onClick={(event)=> this.props.eventoEditar(event)}>Cadastrar</Button> : <Button className="w-100 mt-3 bg-info" onClick={(event)=> this.props.eventoEditar(event)}>Atualizar</Button>}
                               </form>
                      </Col>
             </Row>

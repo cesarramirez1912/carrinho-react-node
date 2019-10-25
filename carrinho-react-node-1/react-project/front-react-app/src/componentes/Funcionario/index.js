@@ -9,19 +9,38 @@ export class PaginaFuncionario extends Component{
     constructor(props){
         super(props);
         this.state = {
+            botaoCadastrar:false,
+            funcionarios:[],
         }
     }
 
-    mostrarModal = () => {
+    componentDidMount(){
+        fetch('http://localhost:8081/funcionarios')
+        .then(response => response.json())
+        .then(funcionarios=>{
+            this.setState({funcionarios:funcionarios})
+        })
+        .catch(e=> console.log(e));
+    }
+
+    eventoEditar = () => {
+        this.setState({
+            botaoCadastrar:!this.state.botaoCadastrar
+        })
+    } 
+
+
+
+   /* mostrarModal = () => {
         this.setState({modal:!this.state.modal})
-      }
+      }*/
    
     render(){
         return (
             <div className="App container-fluid">
               <Row>
                  <Col md="3" className="cor-col-vh min-vh-100 m-0 p-0">
-                     <FormularioFuncionario/>
+                     <FormularioFuncionario estadoBotao={this.state.botaoCadastrar} eventoEditar={this.eventoEditar}/>
                      <BarraEsquerda/>
                 </Col>
                 <Col md="9">
@@ -31,7 +50,7 @@ export class PaginaFuncionario extends Component{
                        </Col>
                   </Row>
                   <Row>
-                      <MostrarFuncionarios/>
+                      <MostrarFuncionarios todosOsFuncionarios={this.state.funcionarios}/>
                   </Row>
                 </Col>
               </Row>
@@ -39,8 +58,3 @@ export class PaginaFuncionario extends Component{
             );
         };
     }
-
-// <FormularioProduto eventoAddProduto={this.eventoAddProduto} produtoEditadoPronto={this.produtoEditadoPronto} controle={this.state} eventoSetState={this.eventoSetState.bind(this)} eventoBotaoEditar={this.eventoBotaoFormularioEdicao} eventosTrocarDescricao={this.trocarInputDescricao.bind(this)}  eventosTrocarPreco={this.trocarInputPreco.bind(this)}/>
-  //   <ModalCarrinho controle={this.state}  mostrarModal={this.mostrarModal}/>
-  // <Header title="Produtos" mostrarModal={this.mostrarModal} itensCarrinho={this.state.itensCarrinho}/>
-                      
