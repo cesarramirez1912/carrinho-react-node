@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Button,Table,InputGroup,Input,Col,Row} from 'reactstrap';
+import { Button,Table} from 'reactstrap';
 import '../style.css';
 import { FaCartPlus,FaEdit,FaTrashAlt } from "react-icons/fa";
 
@@ -55,78 +55,3 @@ export class MostrarProdutos extends Component {
     }
 }
 
-
-export class FormularioProduto extends Component{
-
-    constructor(props){
-        super(props);
-        this.state = {}
-    }
-   
-    trocarInputDescricao(event){
-       this.props.eventosTrocarDescricao(event)
-    }
-    trocarInputPreco(event){
-        this.props.eventosTrocarPreco(event)
-    }
-    trocarQuantidade(event){
-        this.setState({inputQuantidade:event.target.value})
-    }
-
-    clickEdit = () => {
-        fetch('http://localhost:8081/update', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-             },
-             body: JSON.stringify({
-                id_produto:this.props.controle.inputDefaultId,
-                descricao: this.props.controle.inputDefaultDescricao,
-                preco: this.props.controle.inputDefaultPreco,
-             })
-        }).then(
-            this.props.produtoEditadoPronto({
-                id_produto:this.props.controle.inputDefaultId,
-                descricao: this.props.controle.inputDefaultDescricao,
-                preco: this.props.controle.inputDefaultPreco,
-             }),
-            this.cancelCourse(),
-            this.props.eventoBotaoEditar(),
-            )
-    }
-
-    cancelCourse = () => { 
-        document.getElementById("id-form").reset();
-      }
-
-
-    render(){
-        return (
-            <div className="teste">
-           <Row className="p-4">
-                <Col>
-                        <div className="titulo mb-3">
-                            <h3 className="text-light">Cadastrar Produto</h3>
-                         </div>
-                         <h5 className="text-light mb-2">Descricao</h5>
-                             <form id="id-form">
-                                    <InputGroup className="mb-2">
-                                        <Input name="desc"  defaultValue={this.props.controle.inputDefaultDescricao} onChange={(event) =>this.trocarInputDescricao(event)} placeholder="Ex: Leite" />
-                                    </InputGroup>
-                                    <h5 className="text-light mb-2">Preco</h5>
-                                    <InputGroup className="mb-2">
-                                        <Input name="rs" defaultValue={this.props.controle.inputDefaultPreco} onChange={(event) => this.trocarInputPreco(event)} placeholder="R$" />
-                                    </InputGroup>
-                                    <h5 className="text-light">Quantidade</h5>
-                                    <InputGroup className="mb-2">
-                                        <Input name="qntd" defaultValue={this.props.controle.inputDefaultId} onChange={(event)=> this.trocarQuantidade(event)} placeholder="1,2,3.." />
-                                    </InputGroup>
-                                    {this.props.controle.botaoCadastrar ? <Button className="w-100 mt-3 bg-success" onClick={(event)=> this.props.eventoAddProduto(event)}>Cadastrar</Button> : <Button className="w-100 mt-3 bg-info" onClick={this.clickEdit}>Atualizar</Button>}
-                             </form>
-                    </Col>
-           </Row>
-            </div>
-          );
-        };
-    }

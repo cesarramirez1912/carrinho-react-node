@@ -18,13 +18,13 @@ export class Produto extends Component {
         descricao:'',
         preco:''
       },
-      botaoCadastrar: true,
       inputDefaultDescricao:'',
       inputDefaultPreco:'',
       inputDefaultId:'',
       indexEditado:'',
       booleano:false,
       itensCarrinho:[],
+      botaoCadastrar: true,
       boolModalNovoProduto:false,
     }
   }
@@ -45,49 +45,9 @@ eventoModalNovoProduto = () => {
     })
 }
 
-eventoAddProduto = (e) => {
-  e.preventDefault();
-  fetch('http://localhost:8081/novoproduto', {
-    method: 'POST',
-    headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-     },
-     body: JSON.stringify({
-        descricao: this.state.inputDefaultDescricao,
-        preco: this.state.inputDefaultPreco,
-      })
-  })
-  .then(res => res.json()
-  .then(json => {
-    var produto={
-      id_produto:json.insertId,
-      descricao: this.state.inputDefaultDescricao,
-      preco: this.state.inputDefaultPreco,
-    };
-    var arrayTemporario = this.state.produtos;
-    arrayTemporario.unshift(produto)
-    this.setState({
-      produtos:arrayTemporario
-    });
-    this.eventoSetState()
-    document.getElementById("id-form").reset();
-  }
-  ))
-}
-
-eventoEditarProduto = (dadosEditaveis) => {
-  this.setState({
-    indexEditado:dadosEditaveis.index,
-    inputDefaultId:dadosEditaveis.id_produto,
-    inputDefaultDescricao:dadosEditaveis.descricao,
-    inputDefaultPreco:dadosEditaveis.preco,})
-  this.eventoBotaoFormularioEdicao()
-}
-
 
 eventoAddCarrinho = (e,items) => {
-  
+
   var arrayTemporario = this.state.itensCarrinho;
   var valorTemporario = items.quantidade;
   arrayTemporario.push(items);
@@ -104,16 +64,34 @@ eventoAddCarrinho = (e,items) => {
       }
     }
   })
-  this.props.eventoQuantidadeCarrinho(arrayTemporario.length);
+  this.totalCarrinho(arrayTemporario.length);
   this.setState({itensCarrinho:arrayTemporario})
 }
-produtoEditadoPronto = (data) => {
+
+totalCarrinho = (tamanho)=>{
+    this.props.eventoQuantidadeCarrinho(tamanho);
+}
+
+eventoEditarProduto = (dadosEditaveis) => {
+  this.setState({
+    indexEditado:dadosEditaveis.index,
+    inputDefaultId:dadosEditaveis.id_produto,
+    inputDefaultDescricao:dadosEditaveis.descricao,
+    inputDefaultPreco:dadosEditaveis.preco,})
+  this.eventoTrocaBotaoEdicaoCadastro()
+  this.eventoModalNovoProduto()
+}
+
+eventoProdutoEditadoPronto = (data) => {
+ console.log('produtoeditado')
   var arrayTemporario = this.state.produtos;
   arrayTemporario[this.state.indexEditado] = data;
   this.setState({
     produtos:arrayTemporario
   })
-  this.eventoSetState()
+  this.eventoZerarInput()
+  this.eventoTrocaBotaoEdicaoCadastro()
+  this.eventoModalNovoProduto()
 }
 
 eventoRemoveProduto = (id,index) => {
@@ -138,23 +116,27 @@ eventoRemoveProduto = (id,index) => {
   ))
 }
 
-  trocarInputDescricao(event){
-    this.setState({inputDefaultDescricao:event.target.value})
-  }
-
-  trocarInputPreco(event){
-   this.setState({inputDefaultPreco:event.target.value})
-  }
-
-  trocarQuantidade(event){
-    this.setState({inputDefaultId:event})
-  }
+eventoTrocarInput = (event) => {
+    console.log(event.target.value)
+    if(event.target.name==='desc'){
+        this.setState({inputDefaultDescricao:event.target.value})
+      }else if(event.target.name==='rs'){
+        this.setState({inputDefaultPreco:event.target.value})
+      }else{
+        console.log('qntd')
+      }
+     
+}
 
   eventoBotaoFormulario = (dadosFormulario) =>{
     this.setState({novoProduto:dadosFormulario})
   }
 
-  eventoSetState = () => {
+  eventoAtualizarListaProdutos = (produtos) => {
+      this.setState({produtos})
+  }
+
+  eventoZerarInput = () => {
     this.setState({
       inputDefaultDescricao:'',
       inputDefaultPreco:'',
@@ -162,22 +144,22 @@ eventoRemoveProduto = (id,index) => {
     })
   }
 
-  eventoBotaoFormularioEdicao = () => {
+  eventoTrocaBotaoEdicaoCadastro = () => {
     this.setState({
       botaoCadastrar:!this.state.botaoCadastrar,
     })
   }
-  
+
 
   render(){
     return (
         <Col>
            <Row className='mb-2 ml-1'>
-           <Button onClick={event => this.eventoModalNovoProduto()}><h2 className="text-light m-0 p-0">{' '}</h2>Novo Produto</Button>
+             <Button onClick={event => this.eventoModalNovoProduto()}><h2 className="text-light m-0 p-0">{' '}</h2>Novo Produto +</Button>
            </Row>
-            <MostrarProdutos eventoAddCarrinho={this.eventoAddCarrinho} eventoRemoveProduto={this.eventoRemoveProduto} eventoEditarProduto={this.eventoEditarProduto} controls={this.state.novoProduto} controle={this.state} />
-            <ModalCarrinho controle={this.props.estadoModalCarrinho}  mostrarModal={this.props.mostrarModal} itensCarrinho={this.state.itensCarrinho}/>
-            <ModalNovoProduto estadoModal={this.state.boolModalNovoProduto} eventoModalNovoProduto={this.eventoModalNovoProduto}/>
+            <MostrarProdutos eventoAddCarrinho={this.eventoAddCarrinho}  eventoRemoveProduto={this.eventoRemoveProduto} eventoEditarProduto={this.eventoEditarProduto} controls={this.state.novoProduto} controle={this.state} />
+            <ModalCarrinho controle={this.props.estadoModalCarrinho} totalCarrinho={this.totalCarrinho} mostrarModal={this.props.mostrarModal} itensCarrinho={this.state.itensCarrinho} estadoBotaoCadastrarEditar={this.state.botaoCadastrar}/>
+            <ModalNovoProduto eventoTrocaBotaoEdicaoCadastro={this.eventoTrocaBotaoEdicaoCadastro} eventoProdutoEditadoPronto={this.eventoProdutoEditadoPronto} controle={this.state} estadoModal={this.state.boolModalNovoProduto} estadoBotaoCadastrarEditar={this.state.botaoCadastrar} eventoAtualizarListaProdutos={this.eventoAtualizarListaProdutos} eventoZerarInput={this.eventoZerarInput} eventoTrocarInput={this.eventoTrocarInput} eventoModalNovoProduto={this.eventoModalNovoProduto}/>
        </Col>
     );
   }

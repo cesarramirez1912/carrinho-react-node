@@ -33,6 +33,7 @@ export class ModalCarrinho extends Component {
     removerProdutoCarrinho = (e,index) =>{
       let newState = Object.assign(this.state);
       newState.produtos.splice(index,1)
+      this.props.totalCarrinho(this.state.produtos.length)
       this.setState(newState);
     }
 
@@ -112,28 +113,119 @@ export class ModalCarrinho extends Component {
 }
 
 export class ModalNovoProduto extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      produto:{},
+    }
+}
+
+trocarInput(event){
+  this.props.eventoTrocarInput(event);
+}
+
+
+eventoAddProduto = (e) => {
+
+  e.preventDefault();
+  fetch('http://localhost:8081/novoproduto', {
+    method: 'POST',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({
+        descricao: this.props.controle.inputDefaultDescricao,
+        preco: this.props.controle.inputDefaultPreco,
+      })
+  })
+  .then(res => res.json()
+  .then(json => {
+    var produto={
+      id_produto:json.insertId,
+      descricao:  this.props.controle.inputDefaultDescricao,
+      preco: this.props.controle.inputDefaultPreco,
+    };
+    var arrayTemporario = this.props.controle.produtos;
+    arrayTemporario.unshift(produto)
+    this.props.eventoAtualizarListaProdutos(arrayTemporario);
+    this.props.eventoZerarInput();
+    this.cancelCourse();
+    this.props.eventoModalNovoProduto();
+  }
+  ))
+}
+
+
+clickEdit = () => {
+    fetch('http://localhost:8081/update', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+         },
+         body: JSON.stringify({
+            id_produto:this.props.controle.inputDefaultId,
+            descricao: this.props.controle.inputDefaultDescricao,
+            preco: this.props.controle.inputDefaultPreco,
+         })
+    }).then(
+        this.props.eventoProdutoEditadoPronto({
+            id_produto:this.props.controle.inputDefaultId,
+            descricao: this.props.controle.inputDefaultDescricao,
+            preco: this.props.controle.inputDefaultPreco,
+         }),
+        this.cancelCourse(),
+        this.props.eventoZerarInput(),
+        )
+}
+
+cancelCourse = () => { 
+    document.getElementById("id-form").reset();
+  }
+
+  cancelarModal=()=>{
+    this.cancelCourse();
+    this.props.eventoZerarInput();
+    if(this.props.estadoBotaoCadastrarEditar!==true){
+      this.props.eventoTrocaBotaoEdicaoCadastro();
+    }
+    this.props.eventoModalNovoProduto();
+  }
  
 render(){
     return(
     <div>
-     <Modal isOpen={this.props.estadoModal} className='modal-lg'>
+     <Modal isOpen={this.props.estadoModal} className='modal-md'>
       <ModalHeader toggle={this.toggle}>Cadastrar/Editar Produto</ModalHeader>
       <ModalBody>
-      <Table striped>
-          <thead>
-            <tr>
-                <th>Produto</th>
-                <th>Unitario</th>
-                <th>Quantidade</th>
-                <th>Total</th>
-            </tr>
-          </thead>
-        
-        </Table>
+      <div className="teste">
+           <Row className="p-4">
+                <Col>
+                        <div className="titulo mb-3">
+                            <h3 className="text-dark">Cadastrar Produto</h3>
+                         </div>
+                         <h5 className="text-dark mb-2">Descricao</h5>
+                             <form id="id-form">
+                                    <InputGroup className="mb-2">
+                                        <Input name="desc"  defaultValue={this.props.controle.inputDefaultDescricao} onChange={(event) =>this.trocarInput(event)} placeholder="Ex: Leite" />
+                                    </InputGroup>
+                                    <h5 className="text-dark mb-2">Preco</h5>
+                                    <InputGroup className="mb-2">
+                                        <Input name="rs" defaultValue={this.props.controle.inputDefaultPreco} onChange={(event) => this.trocarInput(event)} placeholder="R$" />
+                                    </InputGroup>
+                                    <h5 className="text-dark">Quantidade</h5>
+                                    <InputGroup className="mb-2">
+                                        <Input name="qntd" defaultValue={this.props.controle.inputDefaultId} onChange={(event)=> this.trocarInput(event)} placeholder="1,2,3.." />
+                                    </InputGroup>
+                                    {this.props.estadoBotaoCadastrarEditar ? <Button className="w-100 mt-3 bg-success" onClick={(event)=> this.eventoAddProduto(event)}>Cadastrar</Button> : <Button className="w-100 mt-3 bg-info" onClick={this.clickEdit}>Atualizar</Button>}
+                             </form>
+                    </Col>
+           </Row>
+            </div>
       </ModalBody>
       <ModalFooter>
-        <Button color="success" onClick={``}>Finalizar Compra</Button>{' '}
-        <Button color="secondary" onClick={event => this.props.eventoModalNovoProduto()}>Cancel</Button>
+        <Button color="secondary" onClick={this.cancelarModal}>Cancel</Button>
       </ModalFooter>
     </Modal>
   </div>
