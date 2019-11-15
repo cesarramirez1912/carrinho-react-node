@@ -1,7 +1,7 @@
 
 import React,{Component} from 'react';
 import { Link } from 'react-router-dom'
-import { FaCartPlus,FaEdit,FaTrashAlt } from "react-icons/fa";
+import {FaEdit,FaTrashAlt } from "react-icons/fa";
 import { Button,Table,InputGroup,Input,Col,Row} from 'reactstrap';
 
 export class BarraEsquerda extends Component {

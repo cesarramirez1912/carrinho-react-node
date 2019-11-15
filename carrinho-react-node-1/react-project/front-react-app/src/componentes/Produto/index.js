@@ -1,155 +1,186 @@
-import React, {Component} from 'react';
-import { Button,Table,InputGroup,Input,Col,Row} from 'reactstrap';
+import React,{Component} from 'react';
 import './style.css';
-import { FaCartPlus,FaEdit,FaTrashAlt } from "react-icons/fa";
-import {Link} from 'react-router-dom'
+import {MostrarProdutos} from '../Produto/componentes-produto/ComponentesProduto';
+import {ModalCarrinho, ModalNovoProduto} from '../Modal';
+import {Col,Button,Row} from 'react-bootstrap';
 
-export class MostrarProdutos extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            editaVel:{},
-            defaultDescricao:'',
-            defaultPreco:'',
-            defaultId:'',
-            indexEditado:''
-        }
+
+export class Produto extends Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      novoProduto:{},
+      produtos:[],
+      produtoEditado:{
+        id_produto:'',
+        descricao:'',
+        preco:''
+      },
+      botaoCadastrar: true,
+      inputDefaultDescricao:'',
+      inputDefaultPreco:'',
+      inputDefaultId:'',
+      indexEditado:'',
+      booleano:false,
+      itensCarrinho:[],
+      boolModalNovoProduto:false,
     }
+  }
 
-    render(){
-        var items = this.props.controle.produtos;
-        return (
-            <Table striped className="estilo-tabela">
-              <thead className="bg-dark text-white">
-                <tr>
-                    <th>ID</th>
-                    <th>DESCRICAO</th>
-                    <th>PRECO</th>
-                    <th>ACAO</th>
-                </tr>
-              </thead>
-              <tbody>
-             {
-                     items.map((item,index)=> (
-                        <tr key={item.id_produto}>
-                              <td>
-                               <h6>{item.id_produto}</h6>
-                                   </td>
-                                   <td>
-                                       <h6>{item.descricao}</h6>
-                                   </td>
-                                   <td>
-                                      <h6>{item.preco}</h6>
-                                   </td>
-                                   <td>
-                                      <Button color="info"  onClick={event => this.props.eventoEditarProduto({id_produto:item.id_produto,descricao:item.descricao,preco:item.preco,index})} size="sm"><FaEdit/></Button>{' '}
-                                      <Button color="danger" onClick={event => this.props.eventoRemoveProduto(item.id_produto,index)} size="sm"><FaTrashAlt/></Button>{' '}
-                                      <Button color="success" onClick={event => this.props.eventoAddCarrinho(event,({descricao:item.descricao,preco:item.preco,quantidade:0,precoTotal:item.preco}))} size="sm"><FaCartPlus/></Button>
-                                   </td>
-                                </tr>
-                           ))
-             }
-              </tbody>
-            </Table>
-          );
-    }
+  
+  componentDidMount(){
+    fetch('http://localhost:8081/produtos')
+    .then(response => response.json())
+    .then(produtos=>{
+        this.setState({produtos:produtos})
+    })
+    .catch(e=> console.log(e));
+}
+
+eventoModalNovoProduto = () => {
+    this.setState({
+        boolModalNovoProduto:!this.state.boolModalNovoProduto
+    })
+}
+
+eventoAddProduto = (e) => {
+  e.preventDefault();
+  fetch('http://localhost:8081/novoproduto', {
+    method: 'POST',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({
+        descricao: this.state.inputDefaultDescricao,
+        preco: this.state.inputDefaultPreco,
+      })
+  })
+  .then(res => res.json()
+  .then(json => {
+    var produto={
+      id_produto:json.insertId,
+      descricao: this.state.inputDefaultDescricao,
+      preco: this.state.inputDefaultPreco,
+    };
+    var arrayTemporario = this.state.produtos;
+    arrayTemporario.unshift(produto)
+    this.setState({
+      produtos:arrayTemporario
+    });
+    this.eventoSetState()
+    document.getElementById("id-form").reset();
+  }
+  ))
+}
+
+eventoEditarProduto = (dadosEditaveis) => {
+  this.setState({
+    indexEditado:dadosEditaveis.index,
+    inputDefaultId:dadosEditaveis.id_produto,
+    inputDefaultDescricao:dadosEditaveis.descricao,
+    inputDefaultPreco:dadosEditaveis.preco,})
+  this.eventoBotaoFormularioEdicao()
 }
 
 
-export class FormularioProduto extends Component{
-
-    constructor(props){
-        super(props);
-        this.state = {}
-    }
-   
-    trocarInputDescricao(event){
-       this.props.eventosTrocarDescricao(event)
-    }
-    trocarInputPreco(event){
-        this.props.eventosTrocarPreco(event)
-    }
-    trocarQuantidade(event){
-        this.setState({inputQuantidade:event.target.value})
-    }
-
-    clickEdit = () => {
-        fetch('http://localhost:8081/update', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-             },
-             body: JSON.stringify({
-                id_produto:this.props.controle.inputDefaultId,
-                descricao: this.props.controle.inputDefaultDescricao,
-                preco: this.props.controle.inputDefaultPreco,
-             })
-        }).then(
-            this.props.produtoEditadoPronto({
-                id_produto:this.props.controle.inputDefaultId,
-                descricao: this.props.controle.inputDefaultDescricao,
-                preco: this.props.controle.inputDefaultPreco,
-             }),
-            this.cancelCourse(),
-            this.props.eventoBotaoEditar(),
-            )
-    }
-
-    cancelCourse = () => { 
-        document.getElementById("id-form").reset();
+eventoAddCarrinho = (e,items) => {
+  
+  var arrayTemporario = this.state.itensCarrinho;
+  var valorTemporario = items.quantidade;
+  arrayTemporario.push(items);
+  arrayTemporario.forEach((item,index)=>{
+    if(item.descricao!==items.descricao){
+     
+    }else{
+      valorTemporario = arrayTemporario[index].quantidade;
+      arrayTemporario[index].quantidade=valorTemporario+1;
+      item.precoTotal=item.quantidade*item.preco;
+      item.precoTotal = item.precoTotal.toFixed(2);
+      if(valorTemporario!==0){
+        arrayTemporario.pop();
       }
-    
-      testeBotao = () =>{
-          console.log('teste');
-      }
+    }
+  })
+  this.props.eventoQuantidadeCarrinho(arrayTemporario.length);
+  this.setState({itensCarrinho:arrayTemporario})
+}
+produtoEditadoPronto = (data) => {
+  var arrayTemporario = this.state.produtos;
+  arrayTemporario[this.state.indexEditado] = data;
+  this.setState({
+    produtos:arrayTemporario
+  })
+  this.eventoSetState()
+}
 
-    render(){
-        return (
-            <div className="teste">
-           <Row className="p-4">
-                <Col>
-                        <div className="titulo mb-3">
-                            <h3 className="text-light">Cadastrar Produto</h3>
-                         </div>
-                         <h5 className="text-light mb-2">Descricao</h5>
-                             <form id="id-form">
-                                    <InputGroup className="mb-2">
-                                        <Input name="desc"  defaultValue={this.props.controle.inputDefaultDescricao} onChange={(event) =>this.trocarInputDescricao(event)} placeholder="Ex: Leite" />
-                                    </InputGroup>
-                                    <h5 className="text-light mb-2">Preco</h5>
-                                    <InputGroup className="mb-2">
-                                        <Input name="rs" defaultValue={this.props.controle.inputDefaultPreco} onChange={(event) => this.trocarInputPreco(event)} placeholder="R$" />
-                                    </InputGroup>
-                                    <h5 className="text-light">Quantidade</h5>
-                                    <InputGroup className="mb-2">
-                                        <Input name="qntd" defaultValue={this.props.controle.inputDefaultId} onChange={(event)=> this.trocarQuantidade(event)} placeholder="1,2,3.." />
-                                    </InputGroup>
-                                    {this.props.controle.botaoCadastrar ? <Button className="w-100 mt-3 bg-success" onClick={(event)=> this.props.eventoAddProduto(event)}>Cadastrar</Button> : <Button className="w-100 mt-3 bg-info" onClick={this.clickEdit}>Atualizar</Button>}
-                             </form>
-                    </Col>
+eventoRemoveProduto = (id,index) => {
+  fetch('http://localhost:8081/deletar', {
+    method: 'DELETE',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({
+        id_produto: id,
+      })
+  })
+  .then(res => res.json()
+  .then(json => {
+    this.setState({
+      produtos: this.state.produtos.filter((e,i) =>{
+        return i!==index
+      })
+    });
+  }
+  ))
+}
+
+  trocarInputDescricao(event){
+    this.setState({inputDefaultDescricao:event.target.value})
+  }
+
+  trocarInputPreco(event){
+   this.setState({inputDefaultPreco:event.target.value})
+  }
+
+  trocarQuantidade(event){
+    this.setState({inputDefaultId:event})
+  }
+
+  eventoBotaoFormulario = (dadosFormulario) =>{
+    this.setState({novoProduto:dadosFormulario})
+  }
+
+  eventoSetState = () => {
+    this.setState({
+      inputDefaultDescricao:'',
+      inputDefaultPreco:'',
+      inputDefaultId:'',
+    })
+  }
+
+  eventoBotaoFormularioEdicao = () => {
+    this.setState({
+      botaoCadastrar:!this.state.botaoCadastrar,
+    })
+  }
+  
+
+  render(){
+    return (
+        <Col>
+           <Row className='mb-2 ml-1'>
+           <Button onClick={event => this.eventoModalNovoProduto()}><h2 className="text-light m-0 p-0">{' '}</h2>Novo Produto</Button>
            </Row>
-                    <Col>
-                        <Link to="/funcionario">
-                            <Row>
-                                <button type='button' className='btn2 w-100' onClick={(event)=> this.testeBotao()}>
-                                        <h4>Funcionario</h4>
-                                </button>
-                             </Row>
-                        </Link> 
-                        <Row>
-                            <button type='button' className='btn2 w-100' onClick={(event)=> this.testeBotao()}>
-                                <h4>Estoque</h4>
-                            </button>
-                        </Row>
-                        <Row>
-                            <button type='button' className='btn2 w-100' onClick={(event)=> this.testeBotao()}>
-                                <h4>Vendas</h4>
-                            </button>
-                        </Row>
-                    </Col>
-            </div>
-          );
-        };
-    }
+            <MostrarProdutos eventoAddCarrinho={this.eventoAddCarrinho} eventoRemoveProduto={this.eventoRemoveProduto} eventoEditarProduto={this.eventoEditarProduto} controls={this.state.novoProduto} controle={this.state} />
+            <ModalCarrinho controle={this.props.estadoModalCarrinho}  mostrarModal={this.props.mostrarModal} itensCarrinho={this.state.itensCarrinho}/>
+            <ModalNovoProduto estadoModal={this.state.boolModalNovoProduto} eventoModalNovoProduto={this.eventoModalNovoProduto}/>
+       </Col>
+    );
+  }
+
+}
+

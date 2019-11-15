@@ -7,15 +7,17 @@ export class Header extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            boolModalCarrinho:false,
+        }
     }
 
     render(){
-        var itensQuantidade = this.props.itensCarrinho;
+
         let botao;
         
         if(this.props.title==='Produtos'){
-            botao = <Button onClick={event => this.props.mostrarModal()}><h2 className="text-light m-0 p-0"><FaShoppingCart />{' '}{itensQuantidade.length}</h2></Button>
+            botao = <Button onClick={event => this.props.mostrarModal()}><h2 className="text-light m-0 p-0"><FaShoppingCart />{' '}{this.props.quantidadeCarrinho}</h2></Button>
         }else{
             botao=<div></div>
         }
