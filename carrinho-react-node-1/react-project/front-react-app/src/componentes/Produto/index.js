@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./style.css";
-import { MostrarProdutos } from "../Produto/componentes-produto/ComponentesProduto";
+import { MostrarProdutos } from "./componentesProdutos";
 import { ModalCarrinho, ModalNovoProduto } from "../Modal";
 import {InputGroup,Input,} from "reactstrap";
 import { Col, Button, Row} from "react-bootstrap";

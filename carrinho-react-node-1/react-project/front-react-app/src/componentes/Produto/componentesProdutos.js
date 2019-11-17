@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Table } from "reactstrap";
-import "../style.css";
+import "./style.css";
 import { FaCartPlus, FaEdit, FaTrashAlt } from "react-icons/fa";
 
 export class MostrarProdutos extends Component {
