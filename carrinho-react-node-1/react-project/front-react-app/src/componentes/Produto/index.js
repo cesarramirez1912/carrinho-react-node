@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import "./style.css";
 import { MostrarProdutos } from "../Produto/componentes-produto/ComponentesProduto";
 import { ModalCarrinho, ModalNovoProduto } from "../Modal";
-import { Col, Button, Row } from "react-bootstrap";
+import {InputGroup,Input,} from "reactstrap";
+import { Col, Button, Row} from "react-bootstrap";
+import * as rest from "../../Data/rest";
 
 export class Produto extends Component {
   constructor(props) {
@@ -10,11 +12,6 @@ export class Produto extends Component {
     this.state = {
       novoProduto: {},
       produtos: [],
-      produtoEditado: {
-        id_produto: "",
-        descricao: "",
-        preco: ""
-      },
       inputDefaultDescricao: "",
       inputDefaultPreco: "",
       inputDefaultId: "",
@@ -27,12 +24,9 @@ export class Produto extends Component {
   }
 
   componentDidMount() {
-    fetch("http://localhost:8081/produtos")
-      .then(response => response.json())
-      .then(produtos => {
-        this.setState({ produtos: produtos });
-      })
-      .catch(e => console.log(e));
+    rest.mostrarTodos("produtos").then(produtos => {
+      this.setState({ produtos });
+    });
   }
 
   eventoModalNovoProduto = () => {
@@ -46,6 +40,7 @@ export class Produto extends Component {
     var valorTemporario = items.quantidade;
     arrayTemporario.push(items);
     arrayTemporario.forEach((item, index) => {
+      console.log(item)
       if (item.descricao !== items.descricao) {
       } else {
         valorTemporario = arrayTemporario[index].quantidade;
@@ -89,28 +84,20 @@ export class Produto extends Component {
   };
 
   eventoRemoveProduto = (id, index) => {
-    fetch("http://localhost:8081/deletar", {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        id_produto: id
-      })
-    }).then(res =>
-      res.json().then(json => {
+    rest.removerPorId(id, "deletar").then(respostaExcluido => {
+      if (respostaExcluido.status === 200) {
         this.setState({
           produtos: this.state.produtos.filter((e, i) => {
             return i !== index;
           })
         });
-      })
-    );
+      } else {
+        console.log("erro ao deletar");
+      }
+    });
   };
 
   eventoTrocarInput = event => {
-    console.log(event.target.value);
     if (event.target.name === "desc") {
       this.setState({ inputDefaultDescricao: event.target.value });
     } else if (event.target.name === "rs") {
@@ -145,11 +132,19 @@ export class Produto extends Component {
   render() {
     return (
       <Col>
-        <Row className="mb-2 ml-1">
-          <Button onClick={event => this.eventoModalNovoProduto()}>
+        <Row className="mb-2">
+        <Col className="float-left p-0">
+        <Button onClick={event => this.eventoModalNovoProduto()}>
             <h2 className="text-light m-0 p-0"> </h2>Novo Produto +
           </Button>
+        </Col>
+          <Col className="col-9 p-0 float-right">
+          <InputGroup className="mb-2">
+            <Input name="desc" placeholder="Ex: Leite" />
+          </InputGroup>
+          </Col>
         </Row>
+
         <MostrarProdutos
           eventoAddCarrinho={this.eventoAddCarrinho}
           eventoRemoveProduto={this.eventoRemoveProduto}
@@ -179,3 +174,9 @@ export class Produto extends Component {
     );
   }
 }
+
+/*<Col>
+<InputGroup className="mb-2">
+  <Input name="desc" placeholder="Ex: Leite" />
+</InputGroup>
+</Col>*/

@@ -60,7 +60,7 @@ app.get("/produtos",(req,res)=>{
 });
 
 //Atualizar produto pelo id
-app.post("/update",(req,res)=>{
+app.put("/update",(req,res)=>{
     var param = [
         req.body,
         req.body.id_produto
@@ -68,7 +68,7 @@ app.post("/update",(req,res)=>{
     conexao.query('UPDATE TB_PRODUTO SET ? WHERE id_produto = ?',param,
     function(err,rows,fields){
         if(!err){
-           console.log(rows); 
+           res.send(rows); 
         }else{
             console.log(err);
         }

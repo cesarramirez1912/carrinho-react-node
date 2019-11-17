@@ -12,6 +12,7 @@ import {
   Row
 } from "reactstrap";
 import { FaTrashAlt } from "react-icons/fa";
+import * as rest from "../../Data/rest";
 
 export class ModalCarrinho extends Component {
   constructor(props) {
@@ -172,54 +173,46 @@ export class ModalNovoProduto extends Component {
 
   eventoAddProduto = e => {
     e.preventDefault();
-    fetch("http://localhost:8081/novoproduto", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        descricao: this.props.controle.inputDefaultDescricao,
-        preco: this.props.controle.inputDefaultPreco
-      })
-    }).then(res =>
-      res.json().then(json => {
-        var produto = {
-          id_produto: json.insertId,
-          descricao: this.props.controle.inputDefaultDescricao,
-          preco: this.props.controle.inputDefaultPreco
-        };
+    var objetoProduto = {
+      descricao: this.props.controle.inputDefaultDescricao,
+      preco: this.props.controle.inputDefaultPreco
+    }
+    rest.inserirNovo(objetoProduto,'novoproduto').then(respostaInserir=>{
+      if(respostaInserir.status===200){
+        respostaInserir.json().then(json=>{
+          var produto = {
+            id_produto: json.insertId,
+            descricao: this.props.controle.inputDefaultDescricao,
+            preco: this.props.controle.inputDefaultPreco
+          };
         var arrayTemporario = this.props.controle.produtos;
         arrayTemporario.unshift(produto);
         this.props.eventoAtualizarListaProdutos(arrayTemporario);
         this.props.eventoZerarInput();
         this.cancelCourse();
         this.props.eventoModalNovoProduto();
-      })
-    );
+        })
+      }else{
+        console.log('erro-inserir')
+      }
+    })
   };
 
   clickEdit = () => {
-    fetch("http://localhost:8081/update", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        id_produto: this.props.controle.inputDefaultId,
-        descricao: this.props.controle.inputDefaultDescricao,
-        preco: this.props.controle.inputDefaultPreco
-      })
-    }).then(
-      this.props.eventoProdutoEditadoPronto({
-        id_produto: this.props.controle.inputDefaultId,
-        descricao: this.props.controle.inputDefaultDescricao,
-        preco: this.props.controle.inputDefaultPreco
-      }),
-      this.cancelCourse(),
-      this.props.eventoZerarInput()
-    );
+    var objetoEditarProduto = {
+      id_produto: this.props.controle.inputDefaultId,
+      descricao: this.props.controle.inputDefaultDescricao,
+      preco: this.props.controle.inputDefaultPreco
+    }
+    rest.editarObjeto(objetoEditarProduto,'update').then(respostaEditar=>{
+      if(respostaEditar.status===200){
+        this.props.eventoProdutoEditadoPronto(objetoEditarProduto);
+        this.cancelCourse();
+        this.props.eventoZerarInput()
+      }else{
+        console.log('erro-editar')
+      }
+    })
   };
 
   cancelCourse = () => {
