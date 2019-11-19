@@ -3,7 +3,9 @@ import "./App.css";
 import { Header } from "./componentes/Header";
 import { Produto } from "./componentes/Produto";
 import { Funcionario } from "./componentes/Funcionario";
-import { Row, Col, Button } from "react-bootstrap";
+import { Venda } from "./componentes/Venda";
+import { Estoque } from "./componentes/Estoque";
+import { Row, Col } from "react-bootstrap";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 class App extends Component {
@@ -12,7 +14,7 @@ class App extends Component {
     this.state = {
       boolModalCarrinho: false,
       quantidadeCarrinho: 0,
-      textoHeader:"Produtos"
+      textoHeader: "Produtos"
     };
   }
 
@@ -26,54 +28,50 @@ class App extends Component {
     });
   };
 
- eventoTeste = (teste) => {
-    this.setState({textoHeader:teste})
-  }
+  eventoTeste = teste => {
+    this.eventoQuantidadeCarrinho(0);
+    this.setState({ textoHeader: teste });
+  };
 
   render() {
-    console.log('testetestsrte')
     return (
       <div className="App container-fluid">
         <Row>
           <Router>
-            <Col md="3" className="cor-col-vh min-vh-100 m-0 p-0">
+            <Col md="2" className="cor-col-vh min-vh-100 m-0 p-0">
               <Col>
+                <ul>
                 <Row>
                   <Link to="/">
-                    <li onClick={event =>this.eventoTeste('Produtos')}>
-                      <Link to="/">Produtos</Link>
+                    <li>
+                      <a href="#" onClick={event => this.eventoTeste("Produtos")}>Produtos</a>
                     </li>
                   </Link>
                 </Row>
                 <Row>
                   <Link to="/funcionario">
-                    <li onClick={event =>this.eventoTeste('Funcionario')}>
-                      <Link to="/funcionario">Funcionario</Link>
+                    <li >
+                      <a onClick={event => this.eventoTeste("Funcionario")}>Funcionario</a>
                     </li>
                   </Link>
                 </Row>
                 <Row>
-                  <Button
-                    type="button"
-                    className="btn2 w-100"
-                    onClick={event => this.testeBotao()}
-                  >
-                    <h4>Estoque</h4>
-                  </Button>
+                  <Link to="/estoque">
+                    <li onClick={event => this.eventoTeste("Estoque")}>
+                      Estoque
+                    </li>
+                  </Link>
                 </Row>
                 <Row>
-                  <Button
-                    type="button"
-                    className="btn2 w-100"
-                    onClick={event => this.testeBotao()}
-                  >
-                    <h4>Vendas</h4>
-                  </Button>
+                  <Link to="/venda">
+                    <li onClick={event => this.eventoTeste("Vendas")}>Venda</li>
+                  </Link>
                 </Row>
+                </ul>
               </Col>
             </Col>
 
-            <Col md="9">
+            <Col md="10">
               <Row>
                 <Col className="mb-2 p-0">
                   <Header
@@ -94,6 +92,8 @@ class App extends Component {
                       />
                     </Route>
                     <Route exact path="/funcionario" component={Funcionario} />
+                    <Route exact path="/venda" component={Venda} />
+                    <Route exact path="/estoque" component={Estoque} />
                   </Switch>
                 </Col>
               </Row>

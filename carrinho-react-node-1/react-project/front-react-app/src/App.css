@@ -9,3 +9,27 @@
 .cor-col-vh {
   background-color: rgb(68, 20, 94);
 }
+
+.cor-col-vh ul{
+  margin: 0px;
+  list-style: none;
+  padding: 0px;
+}
+
+.cor-col-vh ul li {
+  text-decoration: none;
+}
+
+.cor-col-vh li a {
+  color: #fff !important;
+  display: inline-block;
+  width: 100% !important;
+  text-decoration: none !important;
+  position: relative;
+  padding: 20px;
+}
+
+.cor-col-vh ul li a:hover {
+  color: #fff;
+  background: #7386D5;
+}

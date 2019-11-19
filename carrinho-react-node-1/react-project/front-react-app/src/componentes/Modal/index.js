@@ -176,26 +176,26 @@ export class ModalNovoProduto extends Component {
     var objetoProduto = {
       descricao: this.props.controle.inputDefaultDescricao,
       preco: this.props.controle.inputDefaultPreco
-    }
-    rest.inserirNovo(objetoProduto,'novoproduto').then(respostaInserir=>{
-      if(respostaInserir.status===200){
-        respostaInserir.json().then(json=>{
+    };
+    rest.inserirNovo(objetoProduto, "novoproduto").then(respostaInserir => {
+      if (respostaInserir.status === 200) {
+        respostaInserir.json().then(json => {
           var produto = {
             id_produto: json.insertId,
             descricao: this.props.controle.inputDefaultDescricao,
             preco: this.props.controle.inputDefaultPreco
           };
-        var arrayTemporario = this.props.controle.produtos;
-        arrayTemporario.unshift(produto);
-        this.props.eventoAtualizarListaProdutos(arrayTemporario);
-        this.props.eventoZerarInput();
-        this.cancelCourse();
-        this.props.eventoModalNovoProduto();
-        })
-      }else{
-        console.log('erro-inserir')
+          var arrayTemporario = this.props.controle.produtos;
+          arrayTemporario.unshift(produto);
+          this.props.eventoAtualizarListaProdutos(arrayTemporario);
+          this.props.eventoZerarInput();
+          this.cancelCourse();
+          this.props.eventoModalNovoProduto();
+        });
+      } else {
+        console.log("erro-inserir");
       }
-    })
+    });
   };
 
   clickEdit = () => {
@@ -203,16 +203,16 @@ export class ModalNovoProduto extends Component {
       id_produto: this.props.controle.inputDefaultId,
       descricao: this.props.controle.inputDefaultDescricao,
       preco: this.props.controle.inputDefaultPreco
-    }
-    rest.editarObjeto(objetoEditarProduto,'update').then(respostaEditar=>{
-      if(respostaEditar.status===200){
+    };
+    rest.editarObjeto(objetoEditarProduto, "update").then(respostaEditar => {
+      if (respostaEditar.status === 200) {
         this.props.eventoProdutoEditadoPronto(objetoEditarProduto);
         this.cancelCourse();
-        this.props.eventoZerarInput()
-      }else{
-        console.log('erro-editar')
+        this.props.eventoZerarInput();
+      } else {
+        console.log("erro-editar");
       }
-    })
+    });
   };
 
   cancelCourse = () => {
@@ -301,77 +301,131 @@ export class ModalNovoProduto extends Component {
   }
 }
 
-/*  constructor(props){
+export class ModalNovoFuncionario extends Component {
+  constructor(props) {
     super(props);
-    this.state = {}
-}
+    this.state = {
+      funcionarios: []
+    };
+  }
 
-trocarInputDescricao(event){
-   this.props.eventosTrocarDescricao(event)
-}
-trocarInputPreco(event){
-    this.props.eventosTrocarPreco(event)
-}
-trocarQuantidade(event){
-    this.setState({inputQuantidade:event.target.value})
-}
+  eventoAddFuncionario = e => {
+    e.preventDefault();
+    var objetoFuncionario = {
+      nome: this.props.variaveis.inputDefaultNome,
+      cargo: this.props.variaveis.inputDefaultCargo,
+      salario: this.props.variaveis.inputDefaultSalario
+    };
+    console.log(objetoFuncionario)
+    rest.inserirNovo(objetoFuncionario, "novofuncionario").then(respostaInserir => {
+      if (respostaInserir.status === 200) {
+        respostaInserir.json().then(json => {
+          var objetoFuncionario = {
+            id_vendedor: json.insertId,
+            nome: this.props.variaveis.inputDefaultNome,
+            cargo: this.props.variaveis.inputDefaultCargo,
+            salario: this.props.variaveis.inputDefaultSalario
+          };
+          var arrayTemporario = this.props.variaveis.funcionarios;
+          arrayTemporario.unshift(objetoFuncionario);
+          this.props.eventoAtualizarListaFuncionarios(arrayTemporario);
+          this.props.eventoZerarInput();
+          this.cancelCourse();
+          this.props.eventoModalNovoFuncionario();
+        });
+      } else {
+        console.log("erro-inserir");
+      }
+    });
+  };
 
-clickEdit = () => {
-    fetch('http://localhost:8081/update', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-         },
-         body: JSON.stringify({
-            id_produto:this.props.controle.inputDefaultId,
-            descricao: this.props.controle.inputDefaultDescricao,
-            preco: this.props.controle.inputDefaultPreco,
-         })
-    }).then(
-        this.props.produtoEditadoPronto({
-            id_produto:this.props.controle.inputDefaultId,
-            descricao: this.props.controle.inputDefaultDescricao,
-            preco: this.props.controle.inputDefaultPreco,
-         }),
-        this.cancelCourse(),
-        this.props.eventoBotaoEditar(),
-        )
-}
-
-cancelCourse = () => { 
+  cancelCourse = () => {
     document.getElementById("id-form").reset();
-  }
+  };
 
-  testeBotao = () =>{
-      console.log('teste');
-  }
+  
+  cancelarModal = () => {
+    this.cancelCourse();
+    this.props.eventoZerarInput();
+    if (this.props.estadoBotaoCadastrarEditar !== true) {
+      this.props.eventoTrocaBotaoEdicaoCadastro();
+    }
+    this.props.eventoModalNovoProduto();
+  };
 
-render(){
+  render() {
     return (
-        <div className="teste">
-       <Row className="p-4">
-            <Col>
-                    <div className="titulo mb-3">
-                        <h3 className="text-light">Cadastrar Produto</h3>
-                     </div>
-                     <h5 className="text-light mb-2">Descricao</h5>
-                         <form id="id-form">
-                                <InputGroup className="mb-2">
-                                    <Input name="desc"  defaultValue={this.props.controle.inputDefaultDescricao} onChange={(event) =>this.trocarInputDescricao(event)} placeholder="Ex: Leite" />
-                                </InputGroup>
-                                <h5 className="text-light mb-2">Preco</h5>
-                                <InputGroup className="mb-2">
-                                    <Input name="rs" defaultValue={this.props.controle.inputDefaultPreco} onChange={(event) => this.trocarInputPreco(event)} placeholder="R$" />
-                                </InputGroup>
-                                <h5 className="text-light">Quantidade</h5>
-                                <InputGroup className="mb-2">
-                                    <Input name="qntd" defaultValue={this.props.controle.inputDefaultId} onChange={(event)=> this.trocarQuantidade(event)} placeholder="1,2,3.." />
-                                </InputGroup>
-                                {this.props.controle.botaoCadastrar ? <Button className="w-100 mt-3 bg-success" onClick={(event)=> this.props.eventoAddProduto(event)}>Cadastrar</Button> : <Button className="w-100 mt-3 bg-info" onClick={this.clickEdit}>Atualizar</Button>}
-                         </form>
-                </Col>
-       </Row>
-        </div>
-      );
-    };*/
+      <div>
+        <Modal
+          isOpen={this.props.estadoModalNovoFuncionario}
+          className="modal-md"
+        >
+          <ModalHeader toggle={this.toggle}>Cadastrar Funcionario</ModalHeader>
+          <ModalBody>
+            <Row className="p-4">
+              <Col>
+                <h5 className="text-dark mb-2">Nome</h5>
+                <form id="id-form">
+                  <InputGroup className="mb-2">
+                    <Input
+                      name="nome"
+                      defaultValue={this.props.variaveis.inputDefaultNome}
+                      onChange={event => this.props.eventoTrocarInput(event)}
+                      placeholder="Ex: Ruben"
+                    />
+                  </InputGroup>
+                  <h5 className="text-dark mb-2">Cargo</h5>
+                  <InputGroup className="mb-2">
+                    <Input
+                      name="cargo"
+                      defaultValue={this.props.variaveis.inputDefaultCargo}
+                      onChange={event => this.props.eventoTrocarInput(event)}
+                      placeholder="Ex: Gerente"
+                    />
+                  </InputGroup>
+                  <h5 className="text-dark">Salario</h5>
+                  <InputGroup className="mb-2">
+                    <Input
+                      name="rs"
+                      defaultValue={this.props.variaveis.inputDefaultSalario}
+                      onChange={event => this.props.eventoTrocarInput(event)}
+                      placeholder="R$"
+                    />
+                  </InputGroup>
+                  {this.props.variaveis.estadoBotaoCadastrarEditar ? (
+                    <Button onClick={event =>this.eventoAddFuncionario(event)} className="w-100 mt-3 bg-success">Cadastrar</Button>
+                  ) : (
+                    <Button className="w-100 mt-3 bg-info">Atualizar</Button>
+                  )}
+                </form>
+              </Col>
+            </Row>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="success" >
+              Criar
+            </Button>{" "}
+            <Button
+              color="secondary"
+              onClick={event => this.props.eventoModalNovoFuncionario()}
+            >
+              Cancel
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </div>
+    );
+  }
+}
+
+/*   defaultValue={this.props.controle.inputDefaultDescricao}
+                        onChange={event => this.trocarInput(event)}
+
+                           onClick={event => this.eventoAddProduto(event)}
+                         onClick={this.clickEdit}
+   defaultValue={this.props.controle.inputDefaultId}
+                        onChange={event => this.trocarInput(event)}
+
+                        defaultValue={this.props.controle.inputDefaultPreco}
+                        onChange={event => this.trocarInput(event)}
+                        */

@@ -72,7 +72,6 @@ export class Produto extends Component {
   };
 
   eventoProdutoEditadoPronto = data => {
-    console.log("produtoeditado");
     var arrayTemporario = this.state.produtos;
     arrayTemporario[this.state.indexEditado] = data;
     this.setState({

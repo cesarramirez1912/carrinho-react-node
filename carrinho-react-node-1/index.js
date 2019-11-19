@@ -37,6 +37,23 @@ app.post("/novoproduto",(req,res)=>{
     }
 });
 
+//Inserir um novo produto
+app.post("/novofuncionario",(req,res)=>{
+    if(res.statusCode==200){
+        conexao.query('INSERT INTO tb_funcionario SET ?',[req.body],
+        (err,rows,fields)=>{
+            if(!err){
+               res.send(rows);
+            }else{
+                console.log(err);
+            }
+        });
+    }else{
+        res.send("ERRO");
+    }
+});
+
+
 //Mostrar todos os funcionarios
 app.get("/funcionarios",(req,res)=>{
     conexao.query('SELECT * FROM TB_FUNCIONARIO ORDER BY id_vendedor DESC',function(err,rows,fields){
