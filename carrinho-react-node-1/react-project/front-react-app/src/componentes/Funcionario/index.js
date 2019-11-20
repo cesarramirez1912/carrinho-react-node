@@ -10,10 +10,12 @@ export class Funcionario extends Component {
     this.state = {
       funcionarios: [],
       modalCriarFuncionario:false,
+      indexEditado: "",
+      inputDefaultId:"",
       inputDefaultNome:"",
       inputDefaultCargo:"",
       inputDefaultSalario:"",
-      estadoBotaoCadastrarEditar:true
+      estadoBotaoCadastrarEditar:true,
     };
   }
 
@@ -23,15 +25,53 @@ export class Funcionario extends Component {
     });
   }
 
+  eventoEditarFuncionario = dadosEditaveis => {
+    this.setState({
+      indexEditado: dadosEditaveis.index,
+      inputDefaultId: dadosEditaveis.id_vendedor,
+      inputDefaultNome:dadosEditaveis.nome,
+      inputDefaultCargo:dadosEditaveis.cargo,
+      inputDefaultSalario:dadosEditaveis.salario,
+    });
+    this.eventoTrocaBotaoEdicaoCadastro();
+    this.eventoModalNovoFuncionario();
+  };
+
+  eventoProdutoEditadoPronto = data => {
+    var arrayTemporario = this.state.funcionarios;
+    arrayTemporario[this.state.indexEditado] = data;
+    this.setState({
+      funcionarios: arrayTemporario
+    });
+    this.eventoZerarInput();
+    this.eventoTrocaBotaoEdicaoCadastro();
+    this.eventoModalNovoFuncionario();
+  };
+
+
   eventoModalNovoFuncionario = ()=>{
     this.setState({modalCriarFuncionario:!this.state.modalCriarFuncionario})
-    this.eventoZerarInput();
   }
 
   eventoTrocaBotaoEdicaoCadastro=()=>
   {
-    this.setState({estadoBotaoCadastrarEditar:!this.state.modalCriarFuncionario})
+    this.setState({estadoBotaoCadastrarEditar:!this.state.estadoBotaoCadastrarEditar})
   }
+
+  eventoRemoveFuncionario= (id, index) => {
+    rest.removerPorId(id, "deletarfuncionario").then(respostaExcluido => {
+      console.log(respostaExcluido)
+      if (respostaExcluido.status === 200) {
+        this.setState({
+          funcionarios: this.state.funcionarios.filter((e, i) => {
+            return i !== index;
+          })
+        });
+      } else {
+        console.log("erro ao deletar");
+      }
+    });
+  };
 
   eventoTrocarInput = event => {
     if (event.target.name === "nome") {
@@ -69,8 +109,8 @@ export class Funcionario extends Component {
             </Button>
           </Col>
         </Row>
-        <MostrarFuncionarios funcionarios={this.state.funcionarios}/>
-        <ModalNovoFuncionario eventoTrocaBotaoEdicaoCadastro={this.eventoTrocaBotaoEdicaoCadastro} variaveis={this.state} eventoTrocarInput={this.eventoTrocarInput} eventoZerarInput={this.eventoZerarInput} estadoModalNovoFuncionario={this.state.modalCriarFuncionario} eventoModalNovoFuncionario={this.eventoModalNovoFuncionario} eventoAtualizarListaFuncionarios={this.eventoAtualizarListaFuncionarios}/>
+        <MostrarFuncionarios eventoRemoveFuncionario={this.eventoRemoveFuncionario} funcionarios={this.state.funcionarios}  eventoZerarInput={this.eventoZerarInput} eventoEditarFuncionario={this.eventoEditarFuncionario} />
+        <ModalNovoFuncionario eventoProdutoEditadoPronto={this.eventoProdutoEditadoPronto} eventoTrocaBotaoEdicaoCadastro={this.eventoTrocaBotaoEdicaoCadastro} variaveis={this.state} eventoTrocarInput={this.eventoTrocarInput} eventoZerarInput={this.eventoZerarInput} estadoModalNovoFuncionario={this.state.modalCriarFuncionario} eventoModalNovoFuncionario={this.eventoModalNovoFuncionario} eventoAtualizarListaFuncionarios={this.eventoAtualizarListaFuncionarios}/>
       </Col>
     );
   }

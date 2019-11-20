@@ -14,8 +14,19 @@ class App extends Component {
     this.state = {
       boolModalCarrinho: false,
       quantidadeCarrinho: 0,
-      textoHeader: "Produtos"
+      textoHeader: ""
     };
+  }
+  componentDidMount() {
+    if (window.location.pathname.split("/")[1] === "funcionario") {
+      this.setState({ textoHeader: "Funcionarios" });
+    } else if (window.location.pathname.split("/")[1] === "") {
+      this.setState({ textoHeader: "Produtos" });
+    } else if (window.location.pathname.split("/")[1] === "estoque") {
+      this.setState({ textoHeader: "Estoque" });
+    } else {
+      this.setState({ textoHeader: "Vendas" });
+    }
   }
 
   mostrarModal = () => {
@@ -41,32 +52,41 @@ class App extends Component {
             <Col md="2" className="cor-col-vh min-vh-100 m-0 p-0">
               <Col>
                 <ul>
-                <Row>
-                  <Link to="/">
-                    <li>
-                      <a href="#" onClick={event => this.eventoTeste("Produtos")}>Produtos</a>
-                    </li>
-                  </Link>
-                </Row>
-                <Row>
-                  <Link to="/funcionario">
-                    <li >
-                      <a onClick={event => this.eventoTeste("Funcionario")}>Funcionario</a>
-                    </li>
-                  </Link>
-                </Row>
-                <Row>
-                  <Link to="/estoque">
-                    <li onClick={event => this.eventoTeste("Estoque")}>
-                      Estoque
-                    </li>
-                  </Link>
-                </Row>
-                <Row>
-                  <Link to="/venda">
-                    <li onClick={event => this.eventoTeste("Vendas")}>Venda</li>
-                  </Link>
-                </Row>
+                  <Row>
+                    <Link to="/">
+                      <li>
+                        <a
+                          href="#"
+                          onClick={event => this.eventoTeste("Produtos")}
+                        >
+                          Produtos
+                        </a>
+                      </li>
+                    </Link>
+                  </Row>
+                  <Row>
+                    <Link to="/funcionario">
+                      <li>
+                        <a onClick={event => this.eventoTeste("Funcionarios")}>
+                          Funcionario
+                        </a>
+                      </li>
+                    </Link>
+                  </Row>
+                  <Row>
+                    <Link to="/estoque">
+                      <li onClick={event => this.eventoTeste("Estoque")}>
+                        Estoque
+                      </li>
+                    </Link>
+                  </Row>
+                  <Row>
+                    <Link to="/venda">
+                      <li onClick={event => this.eventoTeste("Vendas")}>
+                        Venda
+                      </li>
+                    </Link>
+                  </Row>
                 </ul>
               </Col>
             </Col>
@@ -106,17 +126,3 @@ class App extends Component {
 }
 
 export default App;
-//  <Route path="/funcionario" component={PaginaFuncionario} />
-/*  <Produto
-                  estadoModalCarrinho={this.state.boolModalCarrinho}
-                  eventoQuantidadeCarrinho={this.eventoQuantidadeCarrinho}
-                  mostrarModal={this.mostrarModal}
-                ></Produto>*/
-/* <BrowserRouter>
-        <Switch>
-            <Route path="/" exact={true} component={App}/>
-            <Route path="/funcionario"  component={PaginaFuncionario}/>
-        </Switch>
-    </BrowserRouter>*/
-
-//import {BrowserRouter,Switch,Route} from 'react-router-dom'

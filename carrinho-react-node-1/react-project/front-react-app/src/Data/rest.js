@@ -12,9 +12,7 @@ export async function removerPorId(id, rota) {
       Accept: "application/json",
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({
-      id_produto: id
-    })
+    body: JSON.stringify({id})
   });
   return await respostaExcluido;
 }

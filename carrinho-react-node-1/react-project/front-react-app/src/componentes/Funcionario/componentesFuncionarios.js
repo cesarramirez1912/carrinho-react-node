@@ -10,6 +10,8 @@ export class MostrarFuncionarios extends Component {
   }
 
   
+
+  
   render() {
     var items = this.props.funcionarios;
     return (
@@ -39,10 +41,20 @@ export class MostrarFuncionarios extends Component {
                   <h6>{item.salario}</h6>
                 </td>
                 <td>
-                  <Button color="info" size="sm">
+                  <Button color="info"  onClick={event =>
+                    this.props.eventoEditarFuncionario({
+                      id_vendedor: item.id_vendedor,
+                      nome: item.nome,
+                      cargo: item.cargo,
+                      salario: item.salario,
+                      index
+                    })
+                  }size="sm">
                     <FaEdit />
                   </Button>{" "}
-                  <Button color="danger" size="sm">
+                  <Button color="danger" onClick={event =>
+                    this.props.eventoRemoveFuncionario(item.id_vendedor, index)
+                  }size="sm">
                     <FaTrashAlt />
                   </Button>{" "}
                 </td>

@@ -40,7 +40,6 @@ export class Produto extends Component {
     var valorTemporario = items.quantidade;
     arrayTemporario.push(items);
     arrayTemporario.forEach((item, index) => {
-      console.log(item)
       if (item.descricao !== items.descricao) {
       } else {
         valorTemporario = arrayTemporario[index].quantidade;
@@ -173,9 +172,3 @@ export class Produto extends Component {
     );
   }
 }
-
-/*<Col>
-<InputGroup className="mb-2">
-  <Input name="desc" placeholder="Ex: Leite" />
-</InputGroup>
-</Col>*/

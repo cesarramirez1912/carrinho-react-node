@@ -316,7 +316,6 @@ export class ModalNovoFuncionario extends Component {
       cargo: this.props.variaveis.inputDefaultCargo,
       salario: this.props.variaveis.inputDefaultSalario
     };
-    console.log(objetoFuncionario)
     rest.inserirNovo(objetoFuncionario, "novofuncionario").then(respostaInserir => {
       if (respostaInserir.status === 200) {
         respostaInserir.json().then(json => {
@@ -339,6 +338,25 @@ export class ModalNovoFuncionario extends Component {
     });
   };
 
+  clickEdit = () => {
+    var objetoEditarFuncionario = {
+      id_vendedor: this.props.variaveis.inputDefaultId,
+      nome: this.props.variaveis.inputDefaultNome,
+      salario: this.props.variaveis.inputDefaultSalario,
+      cargo: this.props.variaveis.inputDefaultCargo
+    };
+    console.log(objetoEditarFuncionario)
+    rest.editarObjeto(objetoEditarFuncionario, "updatefuncionario").then(respostaEditar => {
+      if (respostaEditar.status === 200) {
+        this.props.eventoProdutoEditadoPronto(objetoEditarFuncionario);
+        this.cancelCourse();
+        this.props.eventoZerarInput();
+      } else {
+        console.log("erro-editar");
+      }
+    });
+  };
+
   cancelCourse = () => {
     document.getElementById("id-form").reset();
   };
@@ -347,10 +365,10 @@ export class ModalNovoFuncionario extends Component {
   cancelarModal = () => {
     this.cancelCourse();
     this.props.eventoZerarInput();
-    if (this.props.estadoBotaoCadastrarEditar !== true) {
+    if (this.props.variaveis.estadoBotaoCadastrarEditar !== true) {
       this.props.eventoTrocaBotaoEdicaoCadastro();
     }
-    this.props.eventoModalNovoProduto();
+    this.props.eventoModalNovoFuncionario();
   };
 
   render() {
@@ -395,19 +413,17 @@ export class ModalNovoFuncionario extends Component {
                   {this.props.variaveis.estadoBotaoCadastrarEditar ? (
                     <Button onClick={event =>this.eventoAddFuncionario(event)} className="w-100 mt-3 bg-success">Cadastrar</Button>
                   ) : (
-                    <Button className="w-100 mt-3 bg-info">Atualizar</Button>
+                    <Button onClick={this.clickEdit} className="w-100 mt-3 bg-info">Atualizar</Button>
                   )}
                 </form>
               </Col>
             </Row>
           </ModalBody>
           <ModalFooter>
-            <Button color="success" >
-              Criar
-            </Button>{" "}
+
             <Button
               color="secondary"
-              onClick={event => this.props.eventoModalNovoFuncionario()}
+              onClick={this.cancelarModal}
             >
               Cancel
             </Button>

@@ -37,7 +37,7 @@ app.post("/novoproduto",(req,res)=>{
     }
 });
 
-//Inserir um novo produto
+//Inserir um novo funcionario
 app.post("/novofuncionario",(req,res)=>{
     if(res.statusCode==200){
         conexao.query('INSERT INTO tb_funcionario SET ?',[req.body],
@@ -53,6 +53,33 @@ app.post("/novofuncionario",(req,res)=>{
     }
 });
 
+//Atualizar funcionario pelo id
+app.put("/updatefuncionario",(req,res)=>{
+    var param = [
+        req.body,
+        req.body.id_vendedor
+    ]
+    conexao.query('UPDATE TB_FUNCIONARIO SET ? WHERE id_vendedor = ?',param,
+    function(err,rows,fields){
+        if(!err){
+           res.send(rows); 
+        }else{
+            console.log(err);
+        }
+    });
+});
+
+//deletar um produto
+app.delete("/deletarfuncionario",(req,res)=>{
+    conexao.query('DELETE FROM TB_FUNCIONARIO WHERE id_vendedor =?',[req.body.id],function(err,rows,fields){
+        if(!err){
+           res.send(rows);
+        }else{
+            console.log(err);
+        }
+    });
+});
+
 
 //Mostrar todos os funcionarios
 app.get("/funcionarios",(req,res)=>{
@@ -60,7 +87,7 @@ app.get("/funcionarios",(req,res)=>{
         if(!err){
            res.send(rows);
         }else{
-            console.log(err);
+            res.send(rows)
         }
     });
 });
@@ -71,7 +98,7 @@ app.get("/produtos",(req,res)=>{
         if(!err){
            res.send(rows);
         }else{
-            console.log(err);
+            res.send(rows)
         }
     });
 });
@@ -94,7 +121,7 @@ app.put("/update",(req,res)=>{
 
 //deletar um produto
 app.delete("/deletar",(req,res)=>{
-    conexao.query('DELETE FROM TB_PRODUTO WHERE id_produto =?',[req.body.id_produto],function(err,rows,fields){
+    conexao.query('DELETE FROM TB_PRODUTO WHERE id_produto =?',[req.body.id],function(err,rows,fields){
         if(!err){
            res.send(rows);
         }else{
