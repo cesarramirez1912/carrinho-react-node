@@ -115,27 +115,3 @@ export class Funcionario extends Component {
     );
   }
 }
-
-/*
-
- onClick={event =>
-                  this.props.eventoRemoveProduto(item.id_produto, index)
-                }
-
-                 onClick={event =>
-                  this.props.eventoAddCarrinho(event, {
-                    descricao: item.descricao,
-                    preco: item.preco,
-                    quantidade: 0,
-                    precoTotal: item.preco
-                  })
-                }
-
-onClick={event =>
-                  this.props.eventoEditarProduto({
-                    id_produto: item.id_produto,
-                    descricao: item.descricao,
-                    preco: item.preco,
-                    index
-                  })
-                }*/

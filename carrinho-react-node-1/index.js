@@ -132,13 +132,30 @@ app.delete("/deletar",(req,res)=>{
 
 //Mostrar estoque produtos
 app.get("/estoques",(req,res)=>{
-    conexao.query('SELECT * FROM tb_estoque,tb_produto where tb_estoque.id_produto=tb_produto.id_produto',function(err,rows,fields){
+    conexao.query('SELECT id_estoque,tb_produto.id_produto,descricao,quantidade FROM tb_estoque,tb_produto where tb_estoque.id_produto=tb_produto.id_produto order by tb_produto.id_produto DESC',function(err,rows,fields){
         if(!err){
            res.send(rows);
         }else{
             console.log(err);
         }
     });
+});
+
+//Criar um novo estoque para produto
+app.post("/novoestoque",(req,res)=>{
+    console.log(req.body)
+    if(res.statusCode==200){
+        conexao.query('INSERT INTO tb_estoque SET ?',[req.body],
+        (err,rows,fields)=>{
+            if(!err){
+               res.send(rows);
+            }else{
+                console.log(err);
+            }
+        });
+    }else{
+        res.send("ERRO");
+    }
 });
 
 app.listen(8081,function(){
