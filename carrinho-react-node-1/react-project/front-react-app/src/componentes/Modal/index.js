@@ -9,7 +9,11 @@ import {
   InputGroup,
   Input,
   Col,
-  Row
+  Row,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
 } from "reactstrap";
 import { FaTrashAlt } from "react-icons/fa";
 import * as rest from "../../Data/rest";
@@ -18,12 +22,19 @@ export class ModalCarrinho extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      produtos: []
+      produtos: [],
+      vendedores: [],
+      dropdownOpen: true
     };
   }
 
-  componentDidMount() {
-    this.setState({ produtos: this.props.itensCarrinho });
+  async componentDidMount() {
+    var resposta = await fetch(`http://localhost:8081/funcionarios`);
+    var json = await resposta.json();
+    this.setState({
+      vendedores: json,
+      produtos: this.props.itensCarrinho
+    });
   }
 
   quantidade = (e, index, numero, op) => {
@@ -43,6 +54,12 @@ export class ModalCarrinho extends Component {
     }
   };
 
+  toggle = () => {
+    this.setState({
+      dropdownOpen: !this.state.dropdownOpen
+    });
+  };
+
   removerProdutoCarrinho = (e, index) => {
     let newState = Object.assign(this.state);
     newState.produtos.splice(index, 1);
@@ -59,8 +76,23 @@ export class ModalCarrinho extends Component {
     return (
       <div>
         <Modal isOpen={this.props.controle} className="modal-lg">
-          <ModalHeader toggle={this.toggle}>
-            Deseja finalizar a compra?
+          <ModalHeader>
+            <Col>
+                <Row className="d-flex justify-content-between">
+                Deseja finalizar a compra?
+                <Dropdown isOpen={this.state.dropdownOpen} onClick={this.toggle}>
+                <DropdownToggle caret>Dropdown</DropdownToggle>
+                <DropdownMenu>
+                  {this.state.vendedores.map(vendedor => (
+                    <DropdownItem key={vendedor.id_vendedor}>
+                      {vendedor.nome}
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
+              </Dropdown>
+                </Row>
+                
+            </Col>
           </ModalHeader>
           <ModalBody>
             <Table striped>
@@ -316,26 +348,28 @@ export class ModalNovoFuncionario extends Component {
       cargo: this.props.variaveis.inputDefaultCargo,
       salario: this.props.variaveis.inputDefaultSalario
     };
-    rest.inserirNovo(objetoFuncionario, "novofuncionario").then(respostaInserir => {
-      if (respostaInserir.status === 200) {
-        respostaInserir.json().then(json => {
-          var objetoFuncionario = {
-            id_vendedor: json.insertId,
-            nome: this.props.variaveis.inputDefaultNome,
-            cargo: this.props.variaveis.inputDefaultCargo,
-            salario: this.props.variaveis.inputDefaultSalario
-          };
-          var arrayTemporario = this.props.variaveis.funcionarios;
-          arrayTemporario.unshift(objetoFuncionario);
-          this.props.eventoAtualizarListaFuncionarios(arrayTemporario);
-          this.props.eventoZerarInput();
-          this.cancelCourse();
-          this.props.eventoModalNovoFuncionario();
-        });
-      } else {
-        console.log("erro-inserir");
-      }
-    });
+    rest
+      .inserirNovo(objetoFuncionario, "novofuncionario")
+      .then(respostaInserir => {
+        if (respostaInserir.status === 200) {
+          respostaInserir.json().then(json => {
+            var objetoFuncionario = {
+              id_vendedor: json.insertId,
+              nome: this.props.variaveis.inputDefaultNome,
+              cargo: this.props.variaveis.inputDefaultCargo,
+              salario: this.props.variaveis.inputDefaultSalario
+            };
+            var arrayTemporario = this.props.variaveis.funcionarios;
+            arrayTemporario.unshift(objetoFuncionario);
+            this.props.eventoAtualizarListaFuncionarios(arrayTemporario);
+            this.props.eventoZerarInput();
+            this.cancelCourse();
+            this.props.eventoModalNovoFuncionario();
+          });
+        } else {
+          console.log("erro-inserir");
+        }
+      });
   };
 
   clickEdit = () => {
@@ -345,23 +379,24 @@ export class ModalNovoFuncionario extends Component {
       salario: this.props.variaveis.inputDefaultSalario,
       cargo: this.props.variaveis.inputDefaultCargo
     };
-    console.log(objetoEditarFuncionario)
-    rest.editarObjeto(objetoEditarFuncionario, "updatefuncionario").then(respostaEditar => {
-      if (respostaEditar.status === 200) {
-        this.props.eventoProdutoEditadoPronto(objetoEditarFuncionario);
-        this.cancelCourse();
-        this.props.eventoZerarInput();
-      } else {
-        console.log("erro-editar");
-      }
-    });
+    console.log(objetoEditarFuncionario);
+    rest
+      .editarObjeto(objetoEditarFuncionario, "updatefuncionario")
+      .then(respostaEditar => {
+        if (respostaEditar.status === 200) {
+          this.props.eventoProdutoEditadoPronto(objetoEditarFuncionario);
+          this.cancelCourse();
+          this.props.eventoZerarInput();
+        } else {
+          console.log("erro-editar");
+        }
+      });
   };
 
   cancelCourse = () => {
     document.getElementById("id-form").reset();
   };
 
-  
   cancelarModal = () => {
     this.cancelCourse();
     this.props.eventoZerarInput();
@@ -411,20 +446,26 @@ export class ModalNovoFuncionario extends Component {
                     />
                   </InputGroup>
                   {this.props.variaveis.estadoBotaoCadastrarEditar ? (
-                    <Button onClick={event =>this.eventoAddFuncionario(event)} className="w-100 mt-3 bg-success">Cadastrar</Button>
+                    <Button
+                      onClick={event => this.eventoAddFuncionario(event)}
+                      className="w-100 mt-3 bg-success"
+                    >
+                      Cadastrar
+                    </Button>
                   ) : (
-                    <Button onClick={this.clickEdit} className="w-100 mt-3 bg-info">Atualizar</Button>
+                    <Button
+                      onClick={this.clickEdit}
+                      className="w-100 mt-3 bg-info"
+                    >
+                      Atualizar
+                    </Button>
                   )}
                 </form>
               </Col>
             </Row>
           </ModalBody>
           <ModalFooter>
-
-            <Button
-              color="secondary"
-              onClick={this.cancelarModal}
-            >
+            <Button color="secondary" onClick={this.cancelarModal}>
               Cancel
             </Button>
           </ModalFooter>

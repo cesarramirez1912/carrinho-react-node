@@ -16,7 +16,7 @@ export class MostrarProdutos extends Component {
   }
 
   render() {
-    var items = this.props.controle.produtos;
+   var items = this.props.filtroProdutos;
     return (
       <Table striped className="estilo-tabela">
         <thead className="bg-dark text-white">

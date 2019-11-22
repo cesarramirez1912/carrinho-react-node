@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import "./style.css";
 import { MostrarProdutos } from "./componentesProdutos";
 import { ModalCarrinho, ModalNovoProduto } from "../Modal";
-import {InputGroup,Input,} from "reactstrap";
-import { Col, Button, Row} from "react-bootstrap";
+import { InputGroup, Input } from "reactstrap";
+import { Col, Button, Row } from "react-bootstrap";
 import * as rest from "../../Data/rest";
 
 export class Produto extends Component {
@@ -12,6 +12,7 @@ export class Produto extends Component {
     this.state = {
       novoProduto: {},
       produtos: [],
+      filtro: "",
       inputDefaultDescricao: "",
       inputDefaultPreco: "",
       inputDefaultId: "",
@@ -121,6 +122,11 @@ export class Produto extends Component {
     });
   };
 
+  eventoFiltrarInformacao = event => {
+    event.preventDefault();
+    this.setState({filtro:event.target.value})
+  };
+
   eventoTrocaBotaoEdicaoCadastro = () => {
     this.setState({
       botaoCadastrar: !this.state.botaoCadastrar
@@ -128,18 +134,25 @@ export class Produto extends Component {
   };
 
   render() {
+    let filtroProdutos = this.state.produtos.filter((produtos)=>{
+      return produtos.descricao.toLowerCase().includes(this.state.filtro.toLowerCase())
+    })
     return (
       <Col>
         <Row className="mb-2">
-        <Col className="float-left p-0">
-        <Button onClick={event => this.eventoModalNovoProduto()}>
-            <h2 className="text-light m-0 p-0"> </h2>Novo Produto +
-          </Button>
-        </Col>
+          <Col className="float-left p-0">
+            <Button onClick={event => this.eventoModalNovoProduto()}>
+              <h2 className="text-light m-0 p-0"> </h2>Novo Produto +
+            </Button>
+          </Col>
           <Col className="col-9 p-0 float-right">
-          <InputGroup className="mb-2">
-            <Input name="desc" placeholder="Ex: Leite" />
-          </InputGroup>
+            <InputGroup className="mb-2">
+              <Input
+                onChange={event => this.eventoFiltrarInformacao(event)}
+                name="filtro"
+                placeholder="Busca por descricao produto"
+              />
+            </InputGroup>
           </Col>
         </Row>
 
@@ -149,6 +162,7 @@ export class Produto extends Component {
           eventoEditarProduto={this.eventoEditarProduto}
           controls={this.state.novoProduto}
           controle={this.state}
+          filtroProdutos={filtroProdutos}
         />
         <ModalCarrinho
           controle={this.props.estadoModalCarrinho}
