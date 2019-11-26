@@ -17,6 +17,7 @@ export class MostrarProdutos extends Component {
 
   render() {
    var items = this.props.filtroProdutos;
+   console.log(items)
     return (
       <Table striped className="estilo-tabela">
         <thead className="bg-dark text-white">
@@ -47,6 +48,7 @@ export class MostrarProdutos extends Component {
                       id_produto: item.id_produto,
                       descricao: item.descricao,
                       preco: item.preco,
+                      quantidade:item.quantidade,
                       index
                     })
                   }

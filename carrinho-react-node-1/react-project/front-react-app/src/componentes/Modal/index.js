@@ -24,15 +24,24 @@ export class ModalCarrinho extends Component {
     this.state = {
       produtos: [],
       vendedores: [],
-      dropdownOpen: true
+      dropdownOpen: false,
+      vendedor:{
+        id_vendedor:'',
+        nome:''
+      },
     };
+    this.toggle = this.toggle.bind(this)
   }
 
   async componentDidMount() {
-    var resposta = await fetch(`http://localhost:8081/funcionarios`);
+    var resposta = await fetch(`http://localhost:8081/vendedores`);
     var json = await resposta.json();
     this.setState({
       vendedores: json,
+      vendedor:{
+        id_vendedor:json[0].id_vendedor,
+        nome:json[0].nome
+      },
       produtos: this.props.itensCarrinho
     });
   }
@@ -54,11 +63,21 @@ export class ModalCarrinho extends Component {
     }
   };
 
-  toggle = () => {
+  toggle() {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen
-    });
-  };
+    })
+  }
+
+  trocarVendedor = (e,vendedor) =>{
+    e.preventDefault();
+    this.setState({
+      vendedor:{
+        id_vendedor:vendedor.id_vendedor,
+        nome:vendedor.nome
+      }
+    })
+  }
 
   removerProdutoCarrinho = (e, index) => {
     let newState = Object.assign(this.state);
@@ -78,20 +97,9 @@ export class ModalCarrinho extends Component {
         <Modal isOpen={this.props.controle} className="modal-lg">
           <ModalHeader>
             <Col>
-                <Row className="d-flex justify-content-between">
+              <Row className="d-flex justify-content-between">
                 Deseja finalizar a compra?
-                <Dropdown isOpen={this.state.dropdownOpen} onClick={this.toggle}>
-                <DropdownToggle caret>Dropdown</DropdownToggle>
-                <DropdownMenu>
-                  {this.state.vendedores.map(vendedor => (
-                    <DropdownItem key={vendedor.id_vendedor}>
-                      {vendedor.nome}
-                    </DropdownItem>
-                  ))}
-                </DropdownMenu>
-              </Dropdown>
-                </Row>
-                
+              </Row>
             </Col>
           </ModalHeader>
           <ModalBody>
@@ -175,6 +183,16 @@ export class ModalCarrinho extends Component {
             </Table>
           </ModalBody>
           <ModalFooter>
+          <Dropdown isOpen={this.state.dropdownOpen} onClick={this.toggle}>
+                <DropdownToggle caret>{this.state.vendedor.nome}</DropdownToggle>
+                <DropdownMenu>
+                  {this.state.vendedores.map(vendedor => (
+                    <DropdownItem onClick={(event)=>this.trocarVendedor(event,vendedor)}>
+                      {vendedor.nome}
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
+              </Dropdown>
             <Button color="success" onClick={``}>
               Finalizar Compra
             </Button>{" "}
@@ -206,16 +224,19 @@ export class ModalNovoProduto extends Component {
   eventoAddProduto = e => {
     e.preventDefault();
     var objetoProduto = {
+      id_produto:-1,
       descricao: this.props.controle.inputDefaultDescricao,
-      preco: this.props.controle.inputDefaultPreco
+      preco: this.props.controle.inputDefaultPreco,
+      quantidade: this.props.controle.inputDefaultQuantidade
     };
     rest.inserirNovo(objetoProduto, "novoproduto").then(respostaInserir => {
       if (respostaInserir.status === 200) {
         respostaInserir.json().then(json => {
           var produto = {
-            id_produto: json.insertId,
+            id_produto: json[0][0].ultimo_id,
             descricao: this.props.controle.inputDefaultDescricao,
-            preco: this.props.controle.inputDefaultPreco
+            preco: this.props.controle.inputDefaultPreco,
+            quantidade: this.props.controle.inputQuantidade
           };
           var arrayTemporario = this.props.controle.produtos;
           arrayTemporario.unshift(produto);
@@ -234,9 +255,10 @@ export class ModalNovoProduto extends Component {
     var objetoEditarProduto = {
       id_produto: this.props.controle.inputDefaultId,
       descricao: this.props.controle.inputDefaultDescricao,
-      preco: this.props.controle.inputDefaultPreco
+      preco: this.props.controle.inputDefaultPreco,
+      quantidade:this.props.controle.inputDefaultQuantidade
     };
-    rest.editarObjeto(objetoEditarProduto, "update").then(respostaEditar => {
+    rest.inserirNovo(objetoEditarProduto, "novoproduto").then(respostaEditar => {
       if (respostaEditar.status === 200) {
         this.props.eventoProdutoEditadoPronto(objetoEditarProduto);
         this.cancelCourse();
@@ -297,7 +319,7 @@ export class ModalNovoProduto extends Component {
                     <InputGroup className="mb-2">
                       <Input
                         name="qntd"
-                        defaultValue={this.props.controle.inputDefaultId}
+                        defaultValue={this.props.controle.inputDefaultQuantidade}
                         onChange={event => this.trocarInput(event)}
                         placeholder="1,2,3.."
                       />
@@ -474,15 +496,3 @@ export class ModalNovoFuncionario extends Component {
     );
   }
 }
-
-/*   defaultValue={this.props.controle.inputDefaultDescricao}
-                        onChange={event => this.trocarInput(event)}
-
-                           onClick={event => this.eventoAddProduto(event)}
-                         onClick={this.clickEdit}
-   defaultValue={this.props.controle.inputDefaultId}
-                        onChange={event => this.trocarInput(event)}
-
-                        defaultValue={this.props.controle.inputDefaultPreco}
-                        onChange={event => this.trocarInput(event)}
-                        */

@@ -13,9 +13,10 @@ export class Produto extends Component {
       novoProduto: {},
       produtos: [],
       filtro: "",
+      inputDefaultId:"",
       inputDefaultDescricao: "",
       inputDefaultPreco: "",
-      inputDefaultId: "",
+      inputDefaultQuantidade: "",
       indexEditado: "",
       booleano: false,
       itensCarrinho: [],
@@ -65,7 +66,8 @@ export class Produto extends Component {
       indexEditado: dadosEditaveis.index,
       inputDefaultId: dadosEditaveis.id_produto,
       inputDefaultDescricao: dadosEditaveis.descricao,
-      inputDefaultPreco: dadosEditaveis.preco
+      inputDefaultPreco: dadosEditaveis.preco,
+      inputDefaultQuantidade: dadosEditaveis.quantidade
     });
     this.eventoTrocaBotaoEdicaoCadastro();
     this.eventoModalNovoProduto();
@@ -102,7 +104,7 @@ export class Produto extends Component {
     } else if (event.target.name === "rs") {
       this.setState({ inputDefaultPreco: event.target.value });
     } else {
-      console.log("qntd");
+      this.setState({ inputDefaultQuantidade:event.target.value});
     }
   };
 
@@ -118,7 +120,7 @@ export class Produto extends Component {
     this.setState({
       inputDefaultDescricao: "",
       inputDefaultPreco: "",
-      inputDefaultId: ""
+      inputDefaultQuantidade: ""
     });
   };
 

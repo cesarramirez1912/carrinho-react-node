@@ -23,10 +23,17 @@ conexao.connect(function(error){
 
 //Inserir um novo produto
 app.post("/novoproduto",(req,res)=>{
+    var param = [
+        req.body.id_produto,
+        req.body.descricao,
+        req.body.preco,
+        req.body.quantidade
+    ]
     if(res.statusCode==200){
-        conexao.query('INSERT INTO tb_produto SET ?',[req.body],
+        conexao.query('CALL proc_inserirestoque(?,@ultimo_id)',[param],
         (err,rows,fields)=>{
             if(!err){
+                console.log(rows[0][0].ultimo_id)
                res.send(rows);
             }else{
                 console.log(err);
@@ -91,10 +98,19 @@ app.get("/funcionarios",(req,res)=>{
         }
     });
 });
+app.get("/vendedores",(req,res)=>{
+    conexao.query('SELECT * FROM TB_FUNCIONARIO WHERE cargo LIKE "%Vendedor%" ORDER BY id_vendedor DESC',function(err,rows,fields){
+        if(!err){
+           res.send(rows);
+        }else{
+            res.send(rows)
+        }
+    });
+});
 
 //Mostrar todos os produtos
 app.get("/produtos",(req,res)=>{
-    conexao.query('SELECT * FROM TB_PRODUTO ORDER BY id_produto DESC',function(err,rows,fields){
+    conexao.query('SELECT * FROM tb_produto,tb_estoque WHERE tb_estoque.id_produto = tb_produto.id_produto ORDER BY tb_produto.id_produto DESC',function(err,rows,fields){
         if(!err){
            res.send(rows);
         }else{

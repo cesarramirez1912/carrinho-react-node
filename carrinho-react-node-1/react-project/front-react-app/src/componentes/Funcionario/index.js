@@ -59,6 +59,7 @@ export class Funcionario extends Component {
   }
 
   eventoRemoveFuncionario= (id, index) => {
+    console.log('entrou')
     rest.removerPorId(id, "deletarfuncionario").then(respostaExcluido => {
       console.log(respostaExcluido)
       if (respostaExcluido.status === 200) {
