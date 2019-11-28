@@ -13,7 +13,7 @@ export class Produto extends Component {
       novoProduto: {},
       produtos: [],
       filtro: "",
-      inputDefaultId:"",
+      inputDefaultId: "",
       inputDefaultDescricao: "",
       inputDefaultPreco: "",
       inputDefaultQuantidade: "",
@@ -104,7 +104,7 @@ export class Produto extends Component {
     } else if (event.target.name === "rs") {
       this.setState({ inputDefaultPreco: event.target.value });
     } else {
-      this.setState({ inputDefaultQuantidade:event.target.value});
+      this.setState({ inputDefaultQuantidade: event.target.value });
     }
   };
 
@@ -126,7 +126,7 @@ export class Produto extends Component {
 
   eventoFiltrarInformacao = event => {
     event.preventDefault();
-    this.setState({filtro:event.target.value})
+    this.setState({ filtro: event.target.value });
   };
 
   eventoTrocaBotaoEdicaoCadastro = () => {
@@ -136,11 +136,33 @@ export class Produto extends Component {
   };
 
   render() {
-    let filtroProdutos = this.state.produtos.filter((produtos)=>{
-      return produtos.descricao.toLowerCase().includes(this.state.filtro.toLowerCase())
-    })
+    let filtroProdutos = this.state.produtos.filter(produtos => {
+      return produtos.descricao
+        .toLowerCase()
+        .includes(this.state.filtro.toLowerCase());
+    });
     return (
       <Col>
+        <div class="d-flex justify-content-start">
+          <div>
+            <a href="/" class="botao">
+              Bebidas
+            </a>
+          </div>
+
+          <div>
+            <a href="/" class="botao">
+              Bebidas
+            </a>
+          </div>
+
+          <div>
+            <a href="/" class="botao">
+              Bebidas
+            </a>
+          </div>
+        </div>
+
         <Row className="mb-2">
           <Col className="float-left p-0">
             <Button onClick={event => this.eventoModalNovoProduto()}>

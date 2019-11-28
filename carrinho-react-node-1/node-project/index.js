@@ -83,10 +83,9 @@ app.post("/novoproduto",(req,res)=>{
         conexao.query('CALL proc_inserirestoque(?,@ultimo_id)',[param],
         (err,rows,fields)=>{
             if(!err){
-                console.log(rows[0][0].ultimo_id)
                res.send(rows);
             }else{
-                console.log(err);
+                res.send(rows);
             }
         });
     }else{
@@ -102,7 +101,7 @@ app.post("/novofuncionario",(req,res)=>{
             if(!err){
                res.send(rows);
             }else{
-                console.log(err);
+                res.send(rows);
             }
         });
     }else{
@@ -121,7 +120,7 @@ app.put("/updatefuncionario",(req,res)=>{
         if(!err){
            res.send(rows); 
         }else{
-            console.log(err);
+            res.send(rows);
         }
     });
 });
@@ -132,7 +131,7 @@ app.delete("/deletarfuncionario",(req,res)=>{
         if(!err){
            res.send(rows);
         }else{
-            console.log(err);
+            res.send(rows);
         }
     });
 });
@@ -182,7 +181,7 @@ app.put("/update",(req,res)=>{
         if(!err){
            res.send(rows); 
         }else{
-            console.log(err);
+            res.send(rows); 
         }
     });
 });
@@ -193,7 +192,7 @@ app.delete("/deletar",(req,res)=>{
         if(!err){
            res.send(rows);
         }else{
-            console.log(err);
+            res.send(rows);
         }
     });
 });
@@ -204,21 +203,20 @@ app.get("/estoques",(req,res)=>{
         if(!err){
            res.send(rows);
         }else{
-            console.log(err);
+            res.send(rows);
         }
     });
 });
 
 //Criar um novo estoque para produto
 app.post("/novoestoque",(req,res)=>{
-    console.log(req.body)
     if(res.statusCode==200){
         conexao.query('INSERT INTO tb_estoque SET ?',[req.body],
         (err,rows,fields)=>{
             if(!err){
                res.send(rows);
             }else{
-                console.log(err);
+                res.send(rows);
             }
         });
     }else{

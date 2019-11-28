@@ -50,43 +50,40 @@ class App extends Component {
         <Row>
           <Router>
             <Col md="2" className="cor-col-vh min-vh-100 m-0 p-0">
-              <Col>
+              <Col className="p-0 m-0">
                 <ul>
-                  <Row>
-                    <Link to="/">
-                      <li>
-                        <a
-                          href="#"
-                          onClick={event => this.eventoTeste("Produtos")}
-                        >
-                          Produtos
-                        </a>
-                      </li>
-                    </Link>
-                  </Row>
-                  <Row>
-                    <Link to="/funcionario">
-                      <li>
-                        <a onClick={event => this.eventoTeste("Funcionarios")}>
-                          Funcionario
-                        </a>
-                      </li>
-                    </Link>
-                  </Row>
-                  <Row>
-                    <Link to="/estoque">
-                      <li onClick={event => this.eventoTeste("Estoque")}>
+                  <Link to="/">
+                    <li>
+                      <a
+                        href="#"
+                        onClick={event => this.eventoTeste("Produtos")}
+                      >
+                        Produtos
+                      </a>
+                    </li>
+                  </Link>
+
+                  <Link to="/funcionario">
+                    <li>
+                      <a onClick={event => this.eventoTeste("Funcionarios")}>
+                        Funcionario
+                      </a>
+                    </li>
+                  </Link>
+
+                  <Link to="/estoque">
+                    <li>
+                      <a onClick={event => this.eventoTeste("Estoque")}>
                         Estoque
-                      </li>
-                    </Link>
-                  </Row>
-                  <Row>
-                    <Link to="/venda">
-                      <li onClick={event => this.eventoTeste("Vendas")}>
-                        Venda
-                      </li>
-                    </Link>
-                  </Row>
+                      </a>
+                    </li>
+                  </Link>
+
+                  <Link to="/venda">
+                    <li>
+                      <a onClick={event => this.eventoTeste("Vendas")}>Venda</a>
+                    </li>
+                  </Link>
                 </ul>
               </Col>
             </Col>
