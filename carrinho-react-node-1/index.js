@@ -21,6 +21,59 @@ conexao.connect(function(error){
     }
 });
 
+
+//inserir uma nova venda
+app.post("/novavenda",(req,res)=>{
+    let valores = [req.body.total,req.body.id_vendedor];
+    let queryInserirVenda = `INSERT INTO tb_venda(data,total,id_vendedor) VALUES(now(),?,?)`;
+    if(res.statusCode==200){
+        conexao.query(queryInserirVenda,valores,
+        (err,rows,fields)=>{
+            if(!err){
+                res.send(rows);
+            }else{
+                res.send(err);
+            }
+        });
+    }else{
+        res.send("ERRO");
+    }
+});
+
+ //Inserir novo produto venda
+ app.post("/produtovenda",(req,res)=>{
+    let valores = req.body;
+    let queryInserirVenda = `INSERT INTO tb_produtovenda (id_produto,valor_unitario,quantidade,id_venda) VALUES ?`;
+    if(res.statusCode==200){
+        conexao.query(queryInserirVenda,[valores.map(item=>[item.id_produto,item.valor_unitario,item.quantidade,item.id_venda])],
+        (err,rows,fields)=>{
+            if(!err){
+                res.send(rows);
+            }else{
+                res.send(err);
+            }
+        });
+    }else{
+        res.send("ERRO");
+    }
+});
+
+//todas as vendas
+app.get("/vendas",(req,res)=>{
+    if(res.statusCode==200){
+     conexao.query('SELECT * FROM tb_venda ORDER BY id_venda DESC',function(err,rows,fields){
+         if(!err){
+            res.send(rows);
+         }else{
+             res.send(rows)
+         }
+     });
+    }else{
+        res.send(res);
+    }
+ });
+
+
 //Inserir um novo produto
 app.post("/novoproduto",(req,res)=>{
     var param = [

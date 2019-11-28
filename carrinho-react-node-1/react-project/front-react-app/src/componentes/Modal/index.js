@@ -25,6 +25,7 @@ export class ModalCarrinho extends Component {
       produtos: [],
       vendedores: [],
       dropdownOpen: false,
+      precoTotalVar:0,
       vendedor:{
         id_vendedor:'',
         nome:''
@@ -86,11 +87,33 @@ export class ModalCarrinho extends Component {
     this.setState(newState);
   };
 
+  async criarNovaVenda (event){
+    event.preventDefault();
+    var texto = document.getElementById('precototal').textContent;
+    var textoCortado = texto.substring(3,texto.length)
+    let textoParaFloat = parseFloat(textoCortado);
+    var objeto = {
+      "total":textoParaFloat,
+      "id_vendedor":this.state.vendedor.id_vendedor
+    }
+    var respostaInserido = await fetch('http://localhost:8081/novavenda', {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(objeto)
+    });
+    const json = await respostaInserido.json();
+    console.log(json)
+    console.log(this.state.produtos)
+  }
+
   render() {
     var itens = this.state.produtos;
     let precoTotalVar = 0;
     itens.forEach(elemento => {
-      precoTotalVar = +precoTotalVar + +elemento.precoTotal;
+       precoTotalVar = +precoTotalVar + +elemento.precoTotal;
     });
     return (
       <div>
@@ -175,7 +198,7 @@ export class ModalCarrinho extends Component {
                     <h4>Total:</h4>
                   </td>
                   <td>
-                    <h4>R$ {precoTotalVar.toFixed(2)}</h4>
+                    <h4 id='precototal'>R$ {precoTotalVar.toFixed(2)}</h4>
                   </td>
                   <td></td>
                 </tr>
@@ -193,7 +216,7 @@ export class ModalCarrinho extends Component {
                   ))}
                 </DropdownMenu>
               </Dropdown>
-            <Button color="success" onClick={``}>
+            <Button color="success" onClick={event=>this.criarNovaVenda(event)}>
               Finalizar Compra
             </Button>{" "}
             <Button
