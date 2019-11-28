@@ -69,6 +69,7 @@ export class MostrarProdutos extends Component {
                   color="success"
                   onClick={event =>
                     this.props.eventoAddCarrinho(event, {
+                      id_produto:item.id_produto,
                       descricao: item.descricao,
                       preco: item.preco,
                       quantidade: 0,

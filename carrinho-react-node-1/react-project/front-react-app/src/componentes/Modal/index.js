@@ -89,24 +89,48 @@ export class ModalCarrinho extends Component {
 
   async criarNovaVenda (event){
     event.preventDefault();
-    var texto = document.getElementById('precototal').textContent;
-    var textoCortado = texto.substring(3,texto.length)
-    let textoParaFloat = parseFloat(textoCortado);
-    var objeto = {
-      "total":textoParaFloat,
-      "id_vendedor":this.state.vendedor.id_vendedor
+    console.log()
+    if(this.state.produtos.length===0){
+     alert('Nenhum produto no carrinho para poder finalizar a compra!')
+    }else{
+      var texto = document.getElementById('precototal').textContent;
+      var textoCortado = texto.substring(3,texto.length)
+      let textoParaFloat = parseFloat(textoCortado);
+      var objeto = {
+        "total":textoParaFloat,
+        "id_vendedor":this.state.vendedor.id_vendedor
+      }
+      var respostaInserido = await fetch('http://localhost:8081/novavenda', {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(objeto)
+      });
+      const json = await respostaInserido.json();
+      var arrayDeProdutos = [];
+      this.state.produtos.map((index)=>{
+        var objeto = {
+          "id_produto":index.id_produto,
+          "valor_unitario": index.preco,
+          "quantidade":index.quantidade,
+          "id_venda":json.insertId
+        }
+        arrayDeProdutos.push(objeto)
+      })
+
+      var respostaProdutoVenda = await fetch('http://localhost:8081/produtovenda', {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(arrayDeProdutos)
+      });
+      const jsonRespostaProdutoVenda = await respostaProdutoVenda.json();
+      alert('Nova Compra efetuada!');
     }
-    var respostaInserido = await fetch('http://localhost:8081/novavenda', {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(objeto)
-    });
-    const json = await respostaInserido.json();
-    console.log(json)
-    console.log(this.state.produtos)
   }
 
   render() {
@@ -511,6 +535,74 @@ export class ModalNovoFuncionario extends Component {
           </ModalBody>
           <ModalFooter>
             <Button color="secondary" onClick={this.cancelarModal}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </div>
+    );
+  }
+}
+
+
+export class ModalVisualizarItemsCompra extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: []
+    };
+  }
+
+  render() {
+    var items =this.props.itemsVendas;
+    var item = 0;
+    if(items.length===0){
+      item=0;
+    }else{
+      item=items[0].id_venda;
+      console.log(items)
+    }
+    return (
+      <div>
+      <Modal isOpen={this.props.estadoModalVerItemsCompra} className="modal-lg">
+          <ModalHeader>
+            <Col>
+              <Row className="d-flex justify-content-between">
+                Produtos da venda {item}
+              </Row>
+            </Col>
+          </ModalHeader>
+          <ModalBody>
+            <Table striped>
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Unitario</th>
+                  <th>Quantidade</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item, index) => (
+                  <tr key={index}>
+                    <td>
+                      <h6>{items[index].id_produto}</h6>
+                    </td>
+                    <td>
+                      <h6>{items[index].valor_unitario}</h6>
+                    </td>
+                    <td>
+                      <h6>{items[index].quantidade}</h6>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="secondary"
+              onClick={event => this.props.mostrarModal()}
+            >
               Cancel
             </Button>
           </ModalFooter>

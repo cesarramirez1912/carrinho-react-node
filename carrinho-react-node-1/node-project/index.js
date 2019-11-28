@@ -1,25 +1,11 @@
 var express = require("express");
 var app = express();
 const cors = require('cors');
+var conexao = require('./conexao');
 app.use(cors());
 app.options('*',cors());
-
-const mysql = require("mysql");
-var conexao = mysql.createConnection({
-    host: 'localhost',
-    user:'root',
-    password:'12345',
-    database: 'sistema_venda'
-});
 app.use(express.json());
 
-conexao.connect(function(error){
-    if(error){
-        console.log(error);
-    }else{
-        console.log('conectado');
-    }
-});
 
 
 //inserir uma nova venda
@@ -38,6 +24,17 @@ app.post("/novavenda",(req,res)=>{
     }else{
         res.send("ERRO");
     }
+});
+
+//Mostrar todos os itens vendas
+app.get("/produtovenda=:id",(req,res)=>{
+    conexao.query('SELECT * FROM tb_produtovenda WHERE id_venda=?',req.params.id,function(err,rows,fields){
+        if(!err){
+           res.send(rows);
+        }else{
+            res.send(rows)
+        }
+    });
 });
 
  //Inserir novo produto venda
@@ -151,6 +148,8 @@ app.get("/funcionarios",(req,res)=>{
         }
     });
 });
+
+
 app.get("/vendedores",(req,res)=>{
     conexao.query('SELECT * FROM TB_FUNCIONARIO WHERE cargo LIKE "%Vendedor%" ORDER BY id_vendedor DESC',function(err,rows,fields){
         if(!err){
