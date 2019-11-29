@@ -142,70 +142,67 @@ export class Produto extends Component {
         .includes(this.state.filtro.toLowerCase());
     });
     return (
-      <Col>
-        <div class="d-flex justify-content-start">
-          <div>
-            <a href="/" class="botao">
-              Bebidas
-            </a>
+      <Col className="p-0">
+        <div class="d-flex justify-content-between p-2">
+          <div className="row p-0 m-0">
+            <div>
+              <a href="/" class="botao">
+                Bebidas
+              </a>
+            </div>
+
+            <div>
+              <a href="/" class="botao">
+                Bebidas
+              </a>
+            </div>
           </div>
 
           <div>
-            <a href="/" class="botao">
-              Bebidas
-            </a>
-          </div>
-
-          <div>
-            <a href="/" class="botao">
-              Bebidas
+            <a class="botao" href="javascript:void(0);" onClick={event => this.eventoModalNovoProduto()}>
+              Novo Produto
             </a>
           </div>
         </div>
 
-        <Row className="mb-2">
-          <Col className="float-left p-0">
-            <Button onClick={event => this.eventoModalNovoProduto()}>
-              <h2 className="text-light m-0 p-0"> </h2>Novo Produto +
-            </Button>
-          </Col>
-          <Col className="col-9 p-0 float-right">
-            <InputGroup className="mb-2">
+        <Col className="coluna-mostrar-produto p-4 mt-3">
+          <Row className="mt-0 mb-4 ml-1 mr-1 p-0">
+            <InputGroup className="p-0">
               <Input
                 onChange={event => this.eventoFiltrarInformacao(event)}
                 name="filtro"
                 placeholder="Busca por descricao produto"
               />
             </InputGroup>
-          </Col>
-        </Row>
+          </Row>
 
-        <MostrarProdutos
-          eventoAddCarrinho={this.eventoAddCarrinho}
-          eventoRemoveProduto={this.eventoRemoveProduto}
-          eventoEditarProduto={this.eventoEditarProduto}
-          controls={this.state.novoProduto}
-          controle={this.state}
-          filtroProdutos={filtroProdutos}
-        />
-        <ModalCarrinho
-          controle={this.props.estadoModalCarrinho}
-          totalCarrinho={this.totalCarrinho}
-          mostrarModal={this.props.mostrarModal}
-          itensCarrinho={this.state.itensCarrinho}
-          estadoBotaoCadastrarEditar={this.state.botaoCadastrar}
-        />
-        <ModalNovoProduto
-          eventoTrocaBotaoEdicaoCadastro={this.eventoTrocaBotaoEdicaoCadastro}
-          eventoProdutoEditadoPronto={this.eventoProdutoEditadoPronto}
-          controle={this.state}
-          estadoModal={this.state.boolModalNovoProduto}
-          estadoBotaoCadastrarEditar={this.state.botaoCadastrar}
-          eventoAtualizarListaProdutos={this.eventoAtualizarListaProdutos}
-          eventoZerarInput={this.eventoZerarInput}
-          eventoTrocarInput={this.eventoTrocarInput}
-          eventoModalNovoProduto={this.eventoModalNovoProduto}
-        />
+          <MostrarProdutos
+            eventoAddCarrinho={this.eventoAddCarrinho}
+            eventoRemoveProduto={this.eventoRemoveProduto}
+            eventoEditarProduto={this.eventoEditarProduto}
+            controls={this.state.novoProduto}
+            controle={this.state}
+            filtroProdutos={filtroProdutos}
+          />
+          <ModalCarrinho
+            controle={this.props.estadoModalCarrinho}
+            totalCarrinho={this.totalCarrinho}
+            mostrarModal={this.props.mostrarModal}
+            itensCarrinho={this.state.itensCarrinho}
+            estadoBotaoCadastrarEditar={this.state.botaoCadastrar}
+          />
+          <ModalNovoProduto
+            eventoTrocaBotaoEdicaoCadastro={this.eventoTrocaBotaoEdicaoCadastro}
+            eventoProdutoEditadoPronto={this.eventoProdutoEditadoPronto}
+            controle={this.state}
+            estadoModal={this.state.boolModalNovoProduto}
+            estadoBotaoCadastrarEditar={this.state.botaoCadastrar}
+            eventoAtualizarListaProdutos={this.eventoAtualizarListaProdutos}
+            eventoZerarInput={this.eventoZerarInput}
+            eventoTrocarInput={this.eventoTrocarInput}
+            eventoModalNovoProduto={this.eventoModalNovoProduto}
+          />
+        </Col>
       </Col>
     );
   }

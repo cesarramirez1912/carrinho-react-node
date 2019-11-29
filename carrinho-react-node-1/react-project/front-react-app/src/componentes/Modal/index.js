@@ -245,7 +245,7 @@ export class ModalCarrinho extends Component {
             </Button>{" "}
             <Button
               color="secondary"
-              onClick={event => this.props.mostrarModal()}
+              onClick={event => this.props.mostrarModal(event)}
             >
               Cancel
             </Button>
@@ -320,7 +320,8 @@ export class ModalNovoProduto extends Component {
     document.getElementById("id-form").reset();
   };
 
-  cancelarModal = () => {
+  cancelarModal = (event) => {
+    event.preventDefault()
     this.cancelCourse();
     this.props.eventoZerarInput();
     if (this.props.estadoBotaoCadastrarEditar !== true) {
@@ -392,7 +393,7 @@ export class ModalNovoProduto extends Component {
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button color="secondary" onClick={this.cancelarModal}>
+            <Button color="secondary" onClick={(event)=>this.cancelarModal(event)}>
               Cancel
             </Button>
           </ModalFooter>

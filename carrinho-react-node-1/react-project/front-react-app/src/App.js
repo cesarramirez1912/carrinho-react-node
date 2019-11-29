@@ -90,7 +90,7 @@ class App extends Component {
 
             <Col md="10">
               <Row>
-                <Col className="mb-2 p-0">
+                <Col className="mb-3 p-0">
                   <Header
                     title={this.state.textoHeader}
                     mostrarModal={this.mostrarModal}
@@ -98,7 +98,7 @@ class App extends Component {
                   />
                 </Col>
               </Row>
-              <Row>
+              <Row className="mr-1 ml-1">
                 <Col>
                   <Switch>
                     <Route path="/" exact={true}>
